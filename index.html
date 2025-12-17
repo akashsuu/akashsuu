@@ -12,100 +12,27 @@
 
     body {
       min-height: 100vh;
-      display: flex;                  /* enables flexbox centering [web:2][web:12] */
-      justify-content: center;        /* horizontal center [web:2] */
-      align-items: center;            /* vertical center [web:2] */
+      display: flex;                  /* center container [web:2][web:18] */
+      justify-content: center;
+      align-items: center;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #f5f5f5;
-      /* soft gradient background [web:7][web:19] */
-      background: radial-gradient(circle at 0% 0%, #1e293b 0, #020617 40%, #020617 100%),
-                  linear-gradient(135deg, #0f172a 0%, #1d3557 40%, #06b6d4 100%);
-      background-blend-mode: screen;
+      background: radial-gradient(circle at top, #ffe6f2 0%, #ffd6ec 35%, #ffc2e3 60%, #ffedf7 100%); /* pastel pink [web:22][web:24][web:32] */
+      color: #4b1f31;
       overflow: hidden;
-    }
-
-    .glow-orbit {
-      position: absolute;
-      width: 420px;
-      height: 420px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.8), transparent 60%);
-      filter: blur(18px);
-      opacity: 0.5;
-      pointer-events: none;
-      animation: float 12s ease-in-out infinite alternate;
-    }
-
-    .glow-orbit.orbit-2 {
-      width: 520px;
-      height: 520px;
-      background: radial-gradient(circle, rgba(129, 140, 248, 0.8), transparent 60%);
-      animation-duration: 16s;
-      animation-delay: -4s;
-    }
-
-    @keyframes float {
-      0% {
-        transform: translate(-30vw, -20vh);
-      }
-      100% {
-        transform: translate(20vw, 25vh);
-      }
-    }
-
-    .card {
-      position: relative;
-      padding: 3.5rem 4.5rem;
-      border-radius: 24px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.25), transparent 55%),
-                  rgba(15, 23, 42, 0.88);
-      box-shadow:
-        0 0 40px rgba(15, 23, 42, 0.9),
-        0 0 120px rgba(56, 189, 248, 0.4);
-      backdrop-filter: blur(22px);    /* glassmorphism effect [web:16] */
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      background: linear-gradient(120deg, rgba(56, 189, 248, 0.3), transparent 40%, rgba(129, 140, 248, 0.3));
-      opacity: 0;
-      transition: opacity 0.8s ease;
-      z-index: -1;
-    }
-
-    .card:hover::before {
-      opacity: 1;
-    }
-
-    .accent-ring {
-      position: absolute;
-      inset: -2px;
-      border-radius: inherit;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      mask-image: radial-gradient(circle at top left, transparent 20%, black 55%);
-      opacity: 0.7;
-      pointer-events: none;
     }
 
     .name {
-      font-size: clamp(3rem, 6vw, 4.5rem);
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
+      font-size: clamp(3rem, 7vw, 4.8rem);
       font-weight: 700;
-      background: linear-gradient(120deg, #e2e8f0, #f9fafb, #6ee7b7);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-align: center;
+      background: linear-gradient(120deg, #ff8fb5, #ff6fa4, #ff9fbf);
       -webkit-background-clip: text;
       background-clip: text;
-      color: transparent;             /* gradient text [web:14] */
-      text-shadow:
-        0 0 18px rgba(15, 23, 42, 0.95),
-        0 0 32px rgba(94, 234, 212, 0.25);
+      color: transparent;
       position: relative;
+      animation: float 6s ease-in-out infinite;
     }
 
     .name::after {
@@ -113,122 +40,53 @@
       position: absolute;
       left: 50%;
       bottom: -1.4rem;
-      width: 120%;
+      width: 115%;
       max-width: 420px;
       height: 1px;
       transform: translateX(-50%);
-      background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.9), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 143, 181, 0.9), transparent);
       opacity: 0.8;
     }
 
-    .tagline {
-      margin-top: 2.7rem;
-      font-size: 0.95rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: #9ca3af;
-      opacity: 0.9;
+    @keyframes float {
+      0%   { transform: translateY(0);   text-shadow: 0 8px 25px rgba(255, 111, 164, 0.4); }
+      50%  { transform: translateY(-10px); text-shadow: 0 14px 35px rgba(255, 111, 164, 0.55); }
+      100% { transform: translateY(0);   text-shadow: 0 8px 25px rgba(255, 111, 164, 0.4); }
     }
 
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 16px rgba(34, 197, 94, 0.9);
-      display: inline-block;
-      margin-right: 0.6rem;
-      animation: pulse 1.4s ease-out infinite;
-    }
-
-    @keyframes pulse {
-      0% {
-        transform: scale(0.8);
-        opacity: 0.4;
-      }
-      50% {
-        transform: scale(1.15);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(0.8);
-        opacity: 0.4;
-      }
-    }
-
-    .hint {
+    .glow {
       position: fixed;
-      bottom: 18px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.8rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #6b7280;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      opacity: 0.7;
-    }
-
-    .hint-line {
-      width: 60px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.8));
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 158, 189, 0.55), transparent 65%);
+      filter: blur(10px);
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0.8;
+      transition: transform 0.25s ease-out;
     }
 
     @media (max-width: 640px) {
-      .card {
-        padding: 2.4rem 2.8rem;
-        width: min(90vw, 420px);
-      }
-      .tagline {
-        letter-spacing: 0.18em;
-        font-size: 0.82rem;
+      .glow {
+        width: 360px;
+        height: 360px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="glow-orbit"></div>
-  <div class="glow-orbit orbit-2"></div>
-
-  <main class="card" id="card">
-    <div class="accent-ring"></div>
-    <h1 class="name">akashsuu</h1>
-    <p class="tagline">
-      <span class="pulse-dot"></span>
-      crafted in pure html · css · js
-    </p>
-  </main>
-
-  <div class="hint">
-    <span class="hint-line"></span>
-    click anywhere to toggle glow
-  </div>
+  <div class="glow" id="glow"></div>
+  <h1 class="name">akashsuu</h1>
 
   <script>
-    const body = document.body;
-    const orbits = document.querySelectorAll(".glow-orbit");
+    const glow = document.getElementById("glow");
 
-    body.addEventListener("mousemove", (e) => {
+    window.addEventListener("mousemove", (e) => {
       const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth - 0.5) * 40;
-      const y = (e.clientY / innerHeight - 0.5) * 40;
-
-      orbits.forEach((orbit, index) => {
-        const intensity = index === 0 ? 1 : 1.4;
-        orbit.style.transform = `translate(${x * intensity}px, ${y * intensity}px)`;
-      });
-    });
-
-    let glowEnabled = true;
-
-    body.addEventListener("click", () => {
-      glowEnabled = !glowEnabled;
-      orbits.forEach((orbit) => {
-        orbit.style.opacity = glowEnabled ? "0.5" : "0";
-      });
+      const x = (e.clientX / innerWidth - 0.5) * 80;
+      const y = (e.clientY / innerHeight - 0.5) * 80;
+      glow.style.transform = `translate(${x}px, ${y}px)`;
     });
   </script>
 </body>
