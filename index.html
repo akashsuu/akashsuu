@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Akashsuu Discord Bot Builder</title>
+<title>Kiodium Bot Builder</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -20,7 +20,7 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 /* HEADER */
 #header{height:var(--header-h);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 10px;gap:8px;flex-shrink:0;user-select:none;position:relative;z-index:20;}
 #logo{display:flex;align-items:center;gap:7px;text-decoration:none;flex-shrink:0;}
-#logo-img{width:24px;height:24px;object-fit:contain;filter:brightness(2) saturate(0.1) contrast(1.2);}
+#logo-img{width:26px;height:26px;object-fit:contain;filter:none;}
 #logo-text{font-weight:700;color:#fff;letter-spacing:0.14em;text-transform:uppercase;font-size:11px;}
 .hsep{width:1px;height:20px;background:var(--border2);flex-shrink:0;}
 #file-tabs{display:flex;align-items:center;flex:1;overflow-x:auto;overflow-y:hidden;min-width:0;}
@@ -89,10 +89,22 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
 .img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 20px;}
 .img-card{background:var(--bg3);border:1px solid var(--border);aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s;}
 .img-card:hover{border-color:var(--accent2);}
+.img-card:hover .real-img{transform:scale(1.03);}
 .img-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;width:100%;height:100%;color:var(--text-muted);pointer-events:none;}
 .img-placeholder svg{width:26px;height:26px;opacity:.4;}
 .iph-lbl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;}
 .img-card-label{position:absolute;bottom:5px;left:7px;font-size:9px;color:rgba(200,200,200,.5);letter-spacing:.1em;text-transform:uppercase;pointer-events:none;}
+.real-img{transition:transform .2s ease;}
+
+/* SCREENSHOT ZOOM */
+#image-zoom{position:fixed;inset:0;background:rgba(0,0,0,.84);z-index:80;display:none;align-items:center;justify-content:center;padding:54px 28px 34px;}
+#image-zoom.open{display:flex;}
+#image-zoom-panel{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:auto;}
+#image-zoom-img{max-width:100%;max-height:100%;object-fit:contain;border:1px solid var(--border2);background:var(--bg);box-shadow:0 18px 60px rgba(0,0,0,.45);cursor:zoom-in;transition:max-width .16s,max-height .16s;}
+#image-zoom.zoomed #image-zoom-img{max-width:none;max-height:none;width:auto;height:auto;cursor:zoom-out;}
+#image-zoom-title{position:absolute;left:18px;top:14px;color:var(--text);font-size:11px;letter-spacing:.08em;text-transform:uppercase;z-index:2;}
+#image-zoom-close{position:absolute;right:16px;top:12px;width:32px;height:32px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-family:inherit;font-size:18px;line-height:1;cursor:pointer;z-index:2;}
+#image-zoom-close:hover{border-color:var(--accent2);color:#fff;}
 
 
 /* DOWNLOAD */
@@ -181,8 +193,8 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
   <div id="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></div>
 
   <a id="logo" href="#">
-    <img id="logo-img" src="data:image/jpeg;base64,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" alt="Left">
-    <span id="logo-text">Builder</span>
+    <img id="logo-img" src="kiodium-logo.png" alt="Kiodium">
+    <span id="logo-text">Kiodium</span>
   </a>
 
   <div class="hsep"></div>
@@ -194,7 +206,7 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
   </div>
   <div id="header-right">
     <a href="#" onclick="switchPage('guide','sec-download');return false;" class="download-btn" style="margin:0;padding:5px 12px;font-size:10px;">Download</a>
-    <span class="wc-badge" id="wc-display">L 36 · W 312</span>
+    <span class="wc-badge" id="wc-display">L 36 Â· W 312</span>
   </div>
 </div>
 
@@ -213,16 +225,16 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
         Builder <span class="tree-item-num">2</span>
       </div>
       <div class="tree-item tree-item-indent" data-page="guide" data-scroll="sec-details">
-        — Details <span class="tree-item-num">13</span>
+        Details <span class="tree-item-num">13</span>
       </div>
       <div class="tree-item tree-item-indent" data-page="guide" data-scroll="sec-quickinserts">
-        — Workflow <span class="tree-item-num">20</span>
+        Workflow <span class="tree-item-num">20</span>
       </div>
       <div class="tree-item" data-page="sources" data-section="sources">
         Commands <span class="tree-item-num">32</span>
       </div>
       <div class="tree-item tree-item-indent" data-page="themes" data-section="themes">
-        — Variables <span class="tree-item-num">36</span>
+        Variables <span class="tree-item-num">36</span>
       </div>
       <div class="tree-section">images</div>
       <div class="tree-item tree-item-indent" data-page="guide" data-scroll="sec-screenshots">
@@ -241,43 +253,47 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
 
       <!-- FIND BAR -->
       <div id="find-bar">
-        <input id="find-input" placeholder="find…">
+        <input id="find-input" placeholder="findâ€¦">
         <span id="find-count">0/0</span>
-        <span id="find-close">×</span>
+        <span id="find-close">Ã—</span>
       </div>
 
       <!-- PAGE: WELCOME -->
       <div class="page active" id="page-welcome">
-        <div class="editor-line"><span class="h1"># Akashsuu Discord Bot Builder</span></div>
+        <div class="editor-line"><span class="h1"># Kiodium Bot Builder</span></div>
         <div class="editor-line"></div>
         <div class="editor-line"><span class="h2">## Build Discord bots visually</span></div>
         <div class="editor-line"></div>
         <div class="editor-line"><span>A node-based builder for Discord bots, plugins, commands,</span></div>
         <div class="editor-line"><span>tickets, music, games, moderation and real message previews.</span></div>
         <div class="editor-line"></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span>Right-click the canvas to add event, command and plugin nodes.</span></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span>Edit command text, embeds, buttons, dropdowns and channel IDs.</span></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span>Use template variables like <span class="cmd">{user}</span>, <span class="cmd">{server}</span> and <span class="cmd">{apiResult}</span>.</span></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span>Preview the output exactly like a Discord message before running.</span></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span>Export or run the bot with prefix commands and plugin folders.</span></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span>Create custom commands that can call any normal REST API.</span></div>
+        <div class="editor-line" style="height:34px;min-height:34px;align-items:center;">
+          <a href="#" onclick="switchPage('guide','sec-download');return false;" class="download-btn" style="margin:0;padding:5px 12px;font-size:10px;">Download Builder</a>
+        </div>
         <div class="editor-line"></div>
-        <div class="editor-line"><span class="dash">——</span>&nbsp;<span class="h2">Details</span></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span>Right-click the canvas to add event, command and plugin nodes.</span></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span>Edit command text, embeds, buttons, dropdowns and channel IDs.</span></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span>Use template variables like <span class="cmd">{user}</span>, <span class="cmd">{server}</span> and <span class="cmd">{apiResult}</span>.</span></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span>Preview the output exactly like a Discord message before running.</span></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span>Export or run the bot with prefix commands and plugin folders.</span></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span>Create custom commands that can call any normal REST API.</span></div>
         <div class="editor-line"></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span><span class="kw">80+</span> commands across utility, tickets, games, fun and moderation.</span></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span><span class="kw">260+</span> variables for embeds, logs, API replies and profile cards.</span></div>
+        <div class="editor-line"><span class="dash">â€”â€”</span>&nbsp;<span class="h2">Details</span></div>
+        <div class="editor-line"></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span><span class="kw">80+</span> commands across utility, tickets, games, fun and moderation.</span></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span><span class="kw">260+</span> variables for embeds, logs, API replies and profile cards.</span></div>
         <div class="editor-line"></div>
         <div class="editor-line"><span class="open-word">plugins</span>&nbsp;<span class="synonym">tickets utility music games moderation admin info giveaway</span></div>
         <div class="editor-line cursor-line" style="--cx:4px"></div>
         <div class="editor-line"></div>
         <div class="editor-line"><span class="comment">// this website keeps the original editor UI and theme</span></div>
         <div class="editor-line"></div>
-        <div class="editor-line"><span class="dash">——</span>&nbsp;<span class="h2">Core Builder Tools</span></div>
+        <div class="editor-line"><span class="dash">â€”â€”</span>&nbsp;<span class="h2">Core Builder Tools</span></div>
         <div class="editor-line"></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span><span class="cmd">Ticket system</span> with panel, claim, lock, unlock and transcript.</span></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span><span class="cmd">Music system</span> with Lavalink play, pause, resume and skip.</span></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span><span class="cmd">Game profiles</span> for Minecraft, Roblox, Valorant, Steam and more.</span></div>
-        <div class="editor-line"><span class="dash">—</span>&nbsp;<span><span class="cmd">API commands</span> with URL, headers, body and result path.</span></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span><span class="cmd">Ticket system</span> with panel, claim, lock, unlock and transcript.</span></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span><span class="cmd">Music system</span> with Lavalink play, pause, resume and skip.</span></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span><span class="cmd">Game profiles</span> for Minecraft, Roblox, Valorant, Steam and more.</span></div>
+        <div class="editor-line"><span class="dash">â€”</span>&nbsp;<span><span class="cmd">API commands</span> with URL, headers, body and result path.</span></div>
         <div class="editor-line"></div>
         <div class="editor-line"><span class="h2">## About</span></div>
         <div class="editor-line"></div>
@@ -287,9 +303,9 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
 
       <!-- PAGE: GUIDE -->
       <div class="page" id="page-guide">
-        <div id="guide-top" style="padding:2px 0 18px;color:var(--text-dim);font-size:11px;border-bottom:1px solid var(--border);margin-bottom:4px;letter-spacing:.04em;">## Builder · Discord Bot Builder</div>
+        <div id="guide-top" style="padding:2px 0 18px;color:var(--text-dim);font-size:11px;border-bottom:1px solid var(--border);margin-bottom:4px;letter-spacing:.04em;">## Builder Â· Discord Bot Builder</div>
 
-        <div class="guide-heading">— Builder Features</div>
+        <div class="guide-heading">â€” Builder Features</div>
         <div class="shortcut-row"><span class="sk">Node Editor</span><span class="guide-desc">Add event, command, condition, send message and plugin nodes.</span></div>
         <div class="shortcut-row"><span class="sk">Plugin System</span><span class="guide-desc">Utility, tickets, music, games, fun, admin, info, giveaway and moderation folders.</span></div>
         <div class="shortcut-row"><span class="sk">Discord Preview</span><span class="guide-desc">Preview embeds, buttons, dropdowns, profiles, music players and ticket panels.</span></div>
@@ -298,7 +314,7 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
         <div class="shortcut-row"><span class="sk">Export</span><span class="guide-desc">Generate runnable Discord bot code from your visual flow.</span></div>
 
         <!-- Screenshots -->
-        <div id="sec-screenshots" class="guide-heading">— Screenshots</div>
+        <div id="sec-screenshots" class="guide-heading">â€” Screenshots</div>
         <div class="img-grid" id="img-grid">
 
           <!-- Card 1: Main UI -->
@@ -331,18 +347,18 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
               <text x="72" y="76" font-size="5" fill="#333" text-anchor="end" font-family="monospace">6</text>
               <!-- content -->
               <text x="84" y="36" font-size="6" fill="#ffffff" font-family="monospace" font-weight="bold"># Welcome</text>
-              <text x="84" y="44" font-size="5" fill="#555" font-family="monospace">——</text>
+              <text x="84" y="44" font-size="5" fill="#555" font-family="monospace">â€”â€”</text>
               <text x="84" y="52" font-size="5" fill="#c8c8c8" font-family="monospace">Build Discord bots with nodes.</text>
-              <text x="84" y="60" font-size="5" fill="#5a5a5a" font-family="monospace">— </text><text x="92" y="60" font-size="5" fill="#9ab" font-family="monospace">&lt;c-o&gt;</text><text x="114" y="60" font-size="5" fill="#c8c8c8" font-family="monospace"> to open file</text>
-              <text x="84" y="68" font-size="5" fill="#5a5a5a" font-family="monospace">— </text><text x="92" y="68" font-size="5" fill="#9ab" font-family="monospace">&lt;tab&gt;</text><text x="110" y="68" font-size="5" fill="#c8c8c8" font-family="monospace"> autocomplete</text>
+              <text x="84" y="60" font-size="5" fill="#5a5a5a" font-family="monospace">â€” </text><text x="92" y="60" font-size="5" fill="#9ab" font-family="monospace">&lt;c-o&gt;</text><text x="114" y="60" font-size="5" fill="#c8c8c8" font-family="monospace"> to open file</text>
+              <text x="84" y="68" font-size="5" fill="#5a5a5a" font-family="monospace">â€” </text><text x="92" y="68" font-size="5" fill="#9ab" font-family="monospace">&lt;tab&gt;</text><text x="110" y="68" font-size="5" fill="#c8c8c8" font-family="monospace"> autocomplete</text>
               <rect x="84" y="71" width="1" height="8" fill="#e8e8e8" opacity="0.8"/>
               <!-- status bar -->
               <rect x="0" y="150" width="260" height="10" fill="#141414"/>
               <rect x="0" y="150" width="260" height="1" fill="#252525"/>
-              <text x="8" y="157" font-size="4" fill="#555" font-family="monospace">L 36 · W 312 · Ln 1, Col 1</text>
-              <text x="220" y="157" font-size="4" fill="#3a3a3a" font-family="monospace">◈ live preview</text>
+              <text x="8" y="157" font-size="4" fill="#555" font-family="monospace">L 36 Â· W 312 Â· Ln 1, Col 1</text>
+              <text x="220" y="157" font-size="4" fill="#3a3a3a" font-family="monospace">â—ˆ live preview</text>
             </svg>
-            <span class="img-card-label">01 · main ui</span>
+            <span class="img-card-label">01 Â· main ui</span>
           </div>
 
           <!-- Card 2: Sidebar Navigation -->
@@ -361,13 +377,13 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
               <text x="60" y="51" font-size="5" fill="#3a3a3a" font-family="monospace">0</text>
               <text x="8" y="63" font-size="5" fill="#555" font-family="monospace">Guide</text>
               <text x="60" y="63" font-size="5" fill="#3a3a3a" font-family="monospace">2</text>
-              <text x="14" y="73" font-size="5" fill="#3a3a3a" font-family="monospace">— Details</text>
+              <text x="14" y="73" font-size="5" fill="#3a3a3a" font-family="monospace">â€” Details</text>
               <text x="57" y="73" font-size="5" fill="#3a3a3a" font-family="monospace">13</text>
-              <text x="14" y="82" font-size="5" fill="#3a3a3a" font-family="monospace">— Workflow</text>
+              <text x="14" y="82" font-size="5" fill="#3a3a3a" font-family="monospace">â€” Workflow</text>
               <text x="57" y="82" font-size="5" fill="#3a3a3a" font-family="monospace">20</text>
               <text x="8" y="92" font-size="5" fill="#555" font-family="monospace">Sources</text>
               <text x="57" y="92" font-size="5" fill="#3a3a3a" font-family="monospace">32</text>
-              <text x="14" y="101" font-size="5" fill="#3a3a3a" font-family="monospace">— Themes</text>
+              <text x="14" y="101" font-size="5" fill="#3a3a3a" font-family="monospace">â€” Themes</text>
               <text x="57" y="101" font-size="5" fill="#3a3a3a" font-family="monospace">36</text>
               <text x="8" y="114" font-size="4" fill="#3a3a3a" font-family="monospace" letter-spacing="1">IMAGES</text>
               <text x="14" y="123" font-size="5" fill="#3a3a3a" font-family="monospace">screenshots/</text>
@@ -376,14 +392,14 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
               <text x="96" y="52" font-size="5" fill="#c8c8c8" font-family="monospace">Discord bot builder</text>
               <text x="96" y="61" font-size="5" fill="#c8c8c8" font-family="monospace">with plugin nodes.</text>
               <text x="96" y="75" font-size="6" fill="#e0e0e0" font-family="monospace">## Guide</text>
-              <text x="96" y="86" font-size="5" fill="#5a5a5a" font-family="monospace">— </text>
+              <text x="96" y="86" font-size="5" fill="#5a5a5a" font-family="monospace">â€” </text>
               <text x="104" y="86" font-size="5" fill="#c8c8c8" font-family="monospace">Navigate markers</text>
-              <text x="96" y="95" font-size="5" fill="#5a5a5a" font-family="monospace">— </text>
+              <text x="96" y="95" font-size="5" fill="#5a5a5a" font-family="monospace">â€” </text>
               <text x="104" y="95" font-size="5" fill="#c8c8c8" font-family="monospace">Preview panel</text>
               <rect x="0" y="150" width="260" height="10" fill="#141414"/>
-              <text x="8" y="157" font-size="4" fill="#555" font-family="monospace">L 36 · W 312</text>
+              <text x="8" y="157" font-size="4" fill="#555" font-family="monospace">L 36 Â· W 312</text>
             </svg>
-            <span class="img-card-label">02 · sidebar</span>
+            <span class="img-card-label">02 Â· sidebar</span>
           </div>
 
           <!-- Card 3: Discord Preview -->
@@ -395,8 +411,8 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
               <rect x="0" y="22" width="260" height="118" fill="#0a0a0a"/>
               <text x="20" y="45" font-size="5" fill="#2a2a2a" font-family="monospace">Build command flows with editable nodes</text>
               <text x="20" y="54" font-size="5" fill="#2a2a2a" font-family="monospace">and Discord-style previews.</text>
-              <text x="20" y="63" font-size="5" fill="#2a2a2a" font-family="monospace">— Create markers by beginning lines with #, ## or ——.</text>
-              <text x="20" y="72" font-size="5" fill="#2a2a2a" font-family="monospace">— Navigate quickly between markers with c-] and c-[.</text>
+              <text x="20" y="63" font-size="5" fill="#2a2a2a" font-family="monospace">â€” Create markers by beginning lines with #, ## or â€”â€”.</text>
+              <text x="20" y="72" font-size="5" fill="#2a2a2a" font-family="monospace">â€” Navigate quickly between markers with c-] and c-[.</text>
               <!-- preview panel -->
               <rect x="0" y="118" width="260" height="42" fill="#141414"/>
               <rect x="0" y="118" width="260" height="1" fill="#252525"/>
@@ -413,7 +429,7 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
               <rect x="140" y="143" width="24" height="10" rx="1" fill="#1a1a1a" stroke="#2e2e2e" stroke-width="0.5"/>
               <text x="152" y="150" font-size="5" fill="#555" font-family="monospace" text-anchor="middle">stop</text>
             </svg>
-            <span class="img-card-label">03 · discord preview</span>
+            <span class="img-card-label">03 Â· discord preview</span>
           </div>
 
           <!-- Card 4: Word Stats -->
@@ -423,7 +439,7 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
               <rect width="260" height="22" fill="#141414"/>
               <!-- content -->
               <text x="20" y="40" font-size="7" fill="#fff" font-family="monospace" font-weight="bold"># Statistics</text>
-              <text x="20" y="55" font-size="5" fill="#555" font-family="monospace">——————————————————————</text>
+              <text x="20" y="55" font-size="5" fill="#555" font-family="monospace">â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”</text>
               <!-- stat rows -->
               <text x="20" y="70" font-size="5" fill="#3a3a3a" font-family="monospace">Lines</text>
               <text x="120" y="70" font-size="5" fill="#a0a0a0" font-family="monospace">36</text>
@@ -448,9 +464,9 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
               <!-- status -->
               <rect x="0" y="150" width="260" height="10" fill="#141414"/>
               <rect x="0" y="150" width="260" height="1" fill="#252525"/>
-              <text x="8" y="157" font-size="4" fill="#555" font-family="monospace">L 36 · W 312 · Ln 4, Col 12</text>
+              <text x="8" y="157" font-size="4" fill="#555" font-family="monospace">L 36 Â· W 312 Â· Ln 4, Col 12</text>
             </svg>
-            <span class="img-card-label">04 · statistics</span>
+            <span class="img-card-label">04 Â· statistics</span>
           </div>
 
           <!-- Card 5: Command Setup -->
@@ -477,7 +493,7 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
               <!-- hint -->
               <text x="20" y="148" font-size="4" fill="#3a3a3a" font-family="monospace">{user} {server} {apiResult}</text>
             </svg>
-            <span class="img-card-label">05 · command setup</span>
+            <span class="img-card-label">05 Â· command setup</span>
           </div>
 
           <!-- Card 6: Themes -->
@@ -525,17 +541,17 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
               <text x="152" y="116" font-size="4" fill="#9a9080" font-family="monospace">Bone</text>
               <!-- status -->
               <rect x="0" y="150" width="260" height="10" fill="#141414"/>
-              <text x="8" y="157" font-size="4" fill="#555" font-family="monospace">6 themes available · drop .theme file to load custom</text>
+              <text x="8" y="157" font-size="4" fill="#555" font-family="monospace">6 themes available Â· drop .theme file to load custom</text>
             </svg>
-            <span class="img-card-label">06 · themes</span>
+            <span class="img-card-label">06 Â· themes</span>
           </div>
 
         </div>
 
         <!-- Download -->
-        <div id="sec-download" class="guide-heading">— Download</div>
+        <div id="sec-download" class="guide-heading">â€” Download</div>
         <p style="color:var(--text-dim);font-size:12px;margin-bottom:10px;line-height:1.9;">
-          Download the Discord Bot Builder app and start creating commands, tickets,<br>
+          Download the Kiodium Bot Builder app and start creating commands, tickets,<br>
           music flows, moderation systems and API-powered plugins.
         </p>
         <a href="#" class="download-btn">
@@ -545,14 +561,14 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
         <div style="font-size:10px;color:var(--text-muted);margin-top:4px;letter-spacing:.05em;">Set the final download URL when your release file is ready.</div>
 
         <!-- Details -->
-        <div id="sec-details" class="guide-heading">— Details</div>
+        <div id="sec-details" class="guide-heading">â€” Details</div>
         <div class="shortcut-row"><span class="sk" style="color:var(--text-dim);">Tickets</span><span class="guide-desc">Panel, create, claim, close, lock, unlock, transcript, rename, add, remove and logs.</span></div>
         <div class="shortcut-row"><span class="sk" style="color:var(--text-dim);">Music</span><span class="guide-desc">Lavalink play command with poster, pause, resume, skip and stop controls.</span></div>
         <div class="shortcut-row"><span class="sk" style="color:var(--text-dim);">Games</span><span class="guide-desc">Minecraft, Roblox, Fortnite, Valorant, Counter-Strike, PUBG, Genshin, Steam and Epic Games.</span></div>
         <div class="shortcut-row"><span class="sk" style="color:var(--text-dim);">Commands</span><span class="guide-desc">Prefix setup, aliases, editable node UI and Discord-style previews.</span></div>
 
         <!-- Workflow -->
-        <div id="sec-quickinserts" class="guide-heading">— Workflow</div>
+        <div id="sec-quickinserts" class="guide-heading">â€” Workflow</div>
         <div class="shortcut-row"><span class="sk"><kbd>1</kbd></span><span class="guide-desc">Add a message event or command node.</span></div>
         <div class="shortcut-row"><span class="sk"><kbd>2</kbd></span><span class="guide-desc">Attach plugins such as ticket panel, music play, welcome or profile lookup.</span></div>
         <div class="shortcut-row"><span class="sk"><kbd>3</kbd></span><span class="guide-desc">Edit text, embeds, buttons, dropdowns and API fields in the node UI.</span></div>
@@ -563,15 +579,15 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
 
       <!-- PAGE: SOURCES -->
       <div class="page" id="page-sources">
-        <div style="padding:2px 0 18px;color:var(--text-dim);font-size:11px;border-bottom:1px solid var(--border);margin-bottom:4px;letter-spacing:.04em;">## Commands · Plugin Map</div>
-        <div class="guide-heading">— Utility</div>
+        <div style="padding:2px 0 18px;color:var(--text-dim);font-size:11px;border-bottom:1px solid var(--border);margin-bottom:4px;letter-spacing:.04em;">## Commands Â· Plugin Map</div>
+        <div class="guide-heading">â€” Utility</div>
         <div class="source-item"><span class="source-num">01</span><div><div><span class="source-link">afk, avatar, invite, membercount, servericon</span></div><div class="source-desc">Common server and user tools with editable embeds and variables.</div></div></div>
         <div class="source-item"><span class="source-num">02</span><div><div><span class="source-link">calculator, channelinfo, createembed, prefix</span></div><div class="source-desc">Interactive tools, embed builder, channel details and prefix setup.</div></div></div>
         <div class="source-item"><span class="source-num">03</span><div><div><span class="source-link">setboost, boostcount, stats, steal, userinfo</span></div><div class="source-desc">Boost settings, bot statistics, emoji/sticker steal and user profile commands.</div></div></div>
-        <div class="guide-heading">— Tickets, Music And Admin</div>
+        <div class="guide-heading">â€” Tickets, Music And Admin</div>
         <div class="source-item"><span class="source-num">04</span><div><div><span class="source-link">ticket-panel, claim, close, lock, unlock, transcript</span></div><div class="source-desc">Ticket panels, claiming, permissions, transcripts and logs.</div></div></div>
         <div class="source-item"><span class="source-num">05</span><div><div><span class="source-link">play, welcome, botinfo, playing</span></div><div class="source-desc">Music player, custom welcome messages, bot details and activity profile setup.</div></div></div>
-        <div class="guide-heading">— Moderation, Games And Fun</div>
+        <div class="guide-heading">â€” Moderation, Games And Fun</div>
         <div class="source-item"><span class="source-num">06</span><div><div><span class="source-link">ban, kick, mute, warn, purge, nuke, lockdown</span></div><div class="source-desc">Moderation actions with reason templates and permission-safe outputs.</div></div></div>
         <div class="source-item"><span class="source-num">07</span><div><div><span class="source-link">mprofile, rprofile, fortnite, valorant, cs, pubg, genshin, steam</span></div><div class="source-desc">Game profile plugins with live-style Discord previews.</div></div></div>
         <div class="source-item"><span class="source-num">08</span><div><div><span class="source-link">8ball, joke, facts, quotes, hug, kiss, pat, slap, dance</span></div><div class="source-desc">Fun commands with API URLs, GIFs, replies and editable embed text.</div></div></div>
@@ -580,25 +596,25 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
 
       <!-- PAGE: THEMES -->
       <div class="page" id="page-themes">
-        <div style="padding:2px 0 18px;color:var(--text-dim);font-size:11px;border-bottom:1px solid var(--border);margin-bottom:4px;letter-spacing:.04em;">## Variables · Template System</div>
-        <div class="guide-heading">— Common Variables</div>
+        <div style="padding:2px 0 18px;color:var(--text-dim);font-size:11px;border-bottom:1px solid var(--border);margin-bottom:4px;letter-spacing:.04em;">## Variables Â· Template System</div>
+        <div class="guide-heading">â€” Common Variables</div>
         <div class="source-item"><span class="source-num">01</span><div><div><span class="source-link">{user} {mention} {tag} {id}</span></div><div class="source-desc">Sender username, mention, tag and Discord ID.</div></div></div>
         <div class="source-item"><span class="source-num">02</span><div><div><span class="source-link">{server} {channel} {memberCount} {prefix}</span></div><div class="source-desc">Server, channel and prefix values.</div></div></div>
         <div class="source-item"><span class="source-num">03</span><div><div><span class="source-link">{args} {arg0} {reason} {targetMention}</span></div><div class="source-desc">Command input, first argument, moderation reason and target mention.</div></div></div>
-        <div class="guide-heading">— Plugin Variables</div>
+        <div class="guide-heading">â€” Plugin Variables</div>
         <div class="source-item"><span class="source-num">04</span><div><div><span class="source-link">{ticketId} {claimedBy} {openedAt} {closedAt}</span></div><div class="source-desc">Ticket system values for logs, channels and transcripts.</div></div></div>
         <div class="source-item"><span class="source-num">05</span><div><div><span class="source-link">{apiResult} {apiStatus} {apiJson} {apiError}</span></div><div class="source-desc">Custom command API response variables.</div></div></div>
         <div class="source-item"><span class="source-num">06</span><div><div><span class="source-link">{mc_name} {steam_name} {roblox_name} {valorant_name}</span></div><div class="source-desc">Game profile variables for embeds and previews.</div></div></div>
-        <div class="guide-heading">— Theme Preview</div>
+        <div class="guide-heading">â€” Theme Preview</div>
         <div class="theme-grid">
-          <div class="theme-card active-theme" onclick="applyTheme(this,'dark')"><div class="tp-preview"><div class="tp-dot" style="background:#0e0e0e;border:1px solid #333"></div><div class="tp-dot" style="background:#c8c8c8"></div><div class="tp-dot" style="background:#555"></div><div class="tp-dot" style="background:#3a3a3a"></div></div><div class="theme-name">Dark · default</div><span class="theme-badge">active</span></div>
-          <div class="theme-card" onclick="applyTheme(this,'light')"><div class="tp-preview"><div class="tp-dot" style="background:#f5f5f0;border:1px solid #ddd"></div><div class="tp-dot" style="background:#222"></div><div class="tp-dot" style="background:#888"></div><div class="tp-dot" style="background:#bbb"></div></div><div class="theme-name">Paper · light</div></div>
-          <div class="theme-card" onclick="applyTheme(this,'sepia')"><div class="tp-preview"><div class="tp-dot" style="background:#1a1510;border:1px solid #3a2f1f"></div><div class="tp-dot" style="background:#c8b89a"></div><div class="tp-dot" style="background:#7c6a3a"></div><div class="tp-dot" style="background:#4a3a1a"></div></div><div class="theme-name">Sepia · warm</div></div>
-          <div class="theme-card" onclick="applyTheme(this,'nord')"><div class="tp-preview"><div class="tp-dot" style="background:#2e3440;border:1px solid #3b4252"></div><div class="tp-dot" style="background:#d8dee9"></div><div class="tp-dot" style="background:#88c0d0"></div><div class="tp-dot" style="background:#5e81ac"></div></div><div class="theme-name">Nord · cool</div></div>
-          <div class="theme-card" onclick="applyTheme(this,'forest')"><div class="tp-preview"><div class="tp-dot" style="background:#0d1a0d;border:1px solid #1a2e1a"></div><div class="tp-dot" style="background:#a8c8a0"></div><div class="tp-dot" style="background:#4a7c59"></div><div class="tp-dot" style="background:#2a4a2a"></div></div><div class="theme-name">Forest · green</div></div>
-          <div class="theme-card" onclick="applyTheme(this,'bone')"><div class="tp-preview"><div class="tp-dot" style="background:#1a1816;border:1px solid #2e2a26"></div><div class="tp-dot" style="background:#e8e0d0"></div><div class="tp-dot" style="background:#9a9080"></div><div class="tp-dot" style="background:#4a4038"></div></div><div class="theme-name">Bone · aged</div></div>
+          <div class="theme-card active-theme" onclick="applyTheme(this,'dark')"><div class="tp-preview"><div class="tp-dot" style="background:#0e0e0e;border:1px solid #333"></div><div class="tp-dot" style="background:#c8c8c8"></div><div class="tp-dot" style="background:#555"></div><div class="tp-dot" style="background:#3a3a3a"></div></div><div class="theme-name">Dark Â· default</div><span class="theme-badge">active</span></div>
+          <div class="theme-card" onclick="applyTheme(this,'light')"><div class="tp-preview"><div class="tp-dot" style="background:#f5f5f0;border:1px solid #ddd"></div><div class="tp-dot" style="background:#222"></div><div class="tp-dot" style="background:#888"></div><div class="tp-dot" style="background:#bbb"></div></div><div class="theme-name">Paper Â· light</div></div>
+          <div class="theme-card" onclick="applyTheme(this,'sepia')"><div class="tp-preview"><div class="tp-dot" style="background:#1a1510;border:1px solid #3a2f1f"></div><div class="tp-dot" style="background:#c8b89a"></div><div class="tp-dot" style="background:#7c6a3a"></div><div class="tp-dot" style="background:#4a3a1a"></div></div><div class="theme-name">Sepia Â· warm</div></div>
+          <div class="theme-card" onclick="applyTheme(this,'nord')"><div class="tp-preview"><div class="tp-dot" style="background:#2e3440;border:1px solid #3b4252"></div><div class="tp-dot" style="background:#d8dee9"></div><div class="tp-dot" style="background:#88c0d0"></div><div class="tp-dot" style="background:#5e81ac"></div></div><div class="theme-name">Nord Â· cool</div></div>
+          <div class="theme-card" onclick="applyTheme(this,'forest')"><div class="tp-preview"><div class="tp-dot" style="background:#0d1a0d;border:1px solid #1a2e1a"></div><div class="tp-dot" style="background:#a8c8a0"></div><div class="tp-dot" style="background:#4a7c59"></div><div class="tp-dot" style="background:#2a4a2a"></div></div><div class="theme-name">Forest Â· green</div></div>
+          <div class="theme-card" onclick="applyTheme(this,'bone')"><div class="tp-preview"><div class="tp-dot" style="background:#1a1816;border:1px solid #2e2a26"></div><div class="tp-dot" style="background:#e8e0d0"></div><div class="tp-dot" style="background:#9a9080"></div><div class="tp-dot" style="background:#4a4038"></div></div><div class="theme-name">Bone Â· aged</div></div>
         </div>
-        <div class="guide-heading">— Full Reference</div>
+        <div class="guide-heading">â€” Full Reference</div>
         <p style="color:var(--text-dim);font-size:12px;line-height:1.9;">The full list is kept in <span style="color:var(--accent2)">variable.md</span> inside the builder project.<br>Every editable node field can use these variables for dynamic Discord output.</p>
         <div style="height:40px"></div>
       </div>
@@ -619,14 +635,23 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
   </div><!-- /editor-wrap -->
 </div><!-- /main -->
 
+<!-- SCREENSHOT ZOOM -->
+<div id="image-zoom" aria-hidden="true">
+  <div id="image-zoom-title"></div>
+  <button id="image-zoom-close" type="button" aria-label="Close image">x</button>
+  <div id="image-zoom-panel">
+    <img id="image-zoom-img" src="" alt="">
+  </div>
+</div>
+
 <!-- STATUS BAR -->
 <div id="statusbar">
   <span>C <span class="stat-val" id="stat-lines">80+</span></span>
-  <span>·</span>
+  <span>Â·</span>
   <span>V <span class="stat-val" id="stat-words">260+</span></span>
-  <span>·</span>
+  <span>Â·</span>
   <span>Plugins <span class="stat-val" id="stat-ln">ready</span>, Preview <span class="stat-val" id="stat-col">live</span></span>
-  <span id="sr-trigger" title="Builder preview">◈ discord builder</span>
+  <span id="sr-trigger" title="Builder preview">â—ˆ discord builder</span>
 </div>
 
 <!-- MOBILE BOTTOM TABS -->
@@ -650,19 +675,19 @@ kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:2px;padd
 </div>
 
 <script>
-// ╔══════════════════════════════════════════════════════╗
-// ║         SCREENSHOT IMAGES — EDIT HERE                ║
-// ║  Replace each src with your image path or URL.       ║
-// ║  Supports .jpg .jpeg .png .webp .gif                 ║
-// ║  Use "" to keep the SVG illustration placeholder.    ║
-// ╚══════════════════════════════════════════════════════╝
+// â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+// â•‘         SCREENSHOT IMAGES â€” EDIT HERE                â•‘
+// â•‘  Replace each src with your image path or URL.       â•‘
+// â•‘  Supports .jpg .jpeg .png .webp .gif                 â•‘
+// â•‘  Use "" to keep the SVG illustration placeholder.    â•‘
+// â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const SCREENSHOTS = [
-  { src: "Screenshot (14).png", label: "01 · builder workspace" },
-  { src: "Screenshot (15).png", label: "02 · node editor" },
-  { src: "Screenshot (16).png", label: "03 · plugin settings" },
-  { src: "Screenshot (17).png", label: "04 · discord preview" },
-  { src: "Screenshot (20).png", label: "05 · command setup" },
-  { src: "Screenshot (21).png", label: "06 · builder details" },
+  { src: "Screenshot (14).png", label: "01 Â· builder workspace" },
+  { src: "Screenshot (15).png", label: "02 Â· node editor" },
+  { src: "Screenshot (16).png", label: "03 Â· plugin settings" },
+  { src: "Screenshot (17).png", label: "04 Â· discord preview" },
+  { src: "Screenshot (20).png", label: "05 Â· command setup" },
+  { src: "Screenshot (21).png", label: "06 Â· builder details" },
 ];
 // Apply images over the SVG cards
 (function applyScreenshots() {
@@ -681,13 +706,58 @@ const SCREENSHOTS = [
       img.alt = label;
       img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9;z-index:2;';
       if (!existing) card.appendChild(img);
+      card.dataset.zoomSrc = src;
+      card.dataset.zoomLabel = label;
+      card.title = 'Open screenshot';
       // hide svg
       const svg = card.querySelector('svg');
       if (svg) svg.style.display = 'none';
     }
   });
 })();
-// ── PAGE NAVIGATION ──
+
+(function setupScreenshotZoom() {
+  const zoom = document.getElementById('image-zoom');
+  const zoomImg = document.getElementById('image-zoom-img');
+  const zoomTitle = document.getElementById('image-zoom-title');
+  const closeBtn = document.getElementById('image-zoom-close');
+  if (!zoom || !zoomImg || !zoomTitle || !closeBtn) return;
+
+  function openZoom(src, label) {
+    zoomImg.src = src;
+    zoomImg.alt = label || 'Screenshot';
+    zoomTitle.textContent = label || 'Screenshot';
+    zoom.classList.add('open');
+    zoom.classList.remove('zoomed');
+    zoom.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeZoom() {
+    zoom.classList.remove('open', 'zoomed');
+    zoom.setAttribute('aria-hidden', 'true');
+    zoomImg.src = '';
+  }
+
+  document.querySelectorAll('#img-grid .img-card').forEach(card => {
+    card.addEventListener('click', () => {
+      if (!card.dataset.zoomSrc) return;
+      openZoom(card.dataset.zoomSrc, card.dataset.zoomLabel);
+    });
+  });
+
+  zoomImg.addEventListener('click', event => {
+    event.stopPropagation();
+    zoom.classList.toggle('zoomed');
+  });
+  closeBtn.addEventListener('click', closeZoom);
+  zoom.addEventListener('click', event => {
+    if (event.target === zoom || event.target.id === 'image-zoom-panel') closeZoom();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && zoom.classList.contains('open')) closeZoom();
+  });
+})();
+// â”€â”€ PAGE NAVIGATION â”€â”€
 const pageTitles = {welcome:'/ README.md', guide:'/ guide.md', sources:'/ sources.md', themes:'/ themes.md'};
 
 function switchPage(pageId, scrollTarget) {
@@ -729,7 +799,7 @@ document.querySelectorAll('.tree-item').forEach(item => {
 // Set initial active tree item
 document.querySelector('.tree-item[data-section="welcome"]').classList.add('active');
 
-// ── GUTTER ──
+// â”€â”€ GUTTER â”€â”€
 const gutter = document.getElementById('gutter');
 function buildGutter() {
   const page = document.querySelector('.page.active');
@@ -749,7 +819,7 @@ document.querySelectorAll('.page').forEach(page => {
   });
 });
 
-// ── STATS ──
+// â”€â”€ STATS â”€â”€
 function updateStats() {
   const page = document.querySelector('.page.active');
   if (!page) return;
@@ -758,11 +828,11 @@ function updateStats() {
   const w = t.trim().split(/\s+/).filter(Boolean).length;
   document.getElementById('stat-lines').textContent = l;
   document.getElementById('stat-words').textContent = w;
-  document.getElementById('wc-display').textContent = `L ${l} · W ${w}`;
+  document.getElementById('wc-display').textContent = `L ${l} Â· W ${w}`;
 }
 updateStats();
 
-// ── FIND BAR ──
+// â”€â”€ FIND BAR â”€â”€
 const findBar = document.getElementById('find-bar');
 const findInput = document.getElementById('find-input');
 document.getElementById('find-close').addEventListener('click', () => findBar.classList.remove('active'));
@@ -778,10 +848,10 @@ findInput.addEventListener('input', () => {
   const page = document.querySelector('.page.active'); let c=0;
   const w = document.createTreeWalker(page, NodeFilter.SHOW_TEXT);
   while(w.nextNode()) if(w.currentNode.textContent.toLowerCase().includes(q.toLowerCase())) c++;
-  document.getElementById('find-count').textContent = `${Math.min(c,99)}/—`;
+  document.getElementById('find-count').textContent = `${Math.min(c,99)}/â€”`;
 });
 
-// ── SPEED READER ──
+// â”€â”€ SPEED READER â”€â”€
 const srPanel = document.getElementById('speed-reader');
 const srWord = document.getElementById('sr-word');
 let srWords=[], srIdx=0, srIv=null, srWpm=300;
@@ -794,7 +864,7 @@ document.getElementById('sr-faster').addEventListener('click',()=>{srWpm=Math.mi
 document.getElementById('sr-slower').addEventListener('click',()=>{srWpm=Math.max(srWpm-50,100);clearInterval(srIv);if(srWords.length)runSR();});
 document.getElementById('sr-trigger').addEventListener('click',()=>startSR(document.querySelector('.page.active').innerText.trim().split(/\s+/)));
 
-// ── MARKER NAV ──
+// â”€â”€ MARKER NAV â”€â”€
 function nextMarker(dir) {
   const page=document.querySelector('.page.active');
   const markers=[...page.querySelectorAll('.h1,.h2')];if(!markers.length)return;
@@ -804,7 +874,7 @@ function nextMarker(dir) {
   if(t)page.scrollTo({top:t.offsetTop-20,behavior:'smooth'});
 }
 
-// ── THEMES ──
+// â”€â”€ THEMES â”€â”€
 const themes={
   dark:{'--bg':'#0e0e0e','--bg2':'#141414','--bg3':'#1a1a1a','--border':'#252525','--border2':'#2e2e2e','--text':'#c8c8c8','--text-dim':'#555','--text-muted':'#3a3a3a','--accent':'#e8e8e8','--accent2':'#a0a0a0','--line-num':'#333'},
   light:{'--bg':'#f5f5f0','--bg2':'#eeeeea','--bg3':'#e8e8e2','--border':'#ddd','--border2':'#ccc','--text':'#333','--text-dim':'#888','--text-muted':'#bbb','--accent':'#111','--accent2':'#666','--line-num':'#ccc'},
@@ -821,7 +891,7 @@ function applyTheme(card,name){
   const b=document.createElement('span');b.className='theme-badge';b.textContent='active';card.appendChild(b);
 }
 
-// ── CURSOR LINE ──
+// â”€â”€ CURSOR LINE â”€â”€
 document.querySelectorAll('.editor-line').forEach(line=>{
   line.addEventListener('click',function(e){
     document.querySelectorAll('.cursor-line').forEach(l=>l.classList.remove('cursor-line'));
@@ -835,9 +905,10 @@ document.querySelectorAll('.editor-line').forEach(line=>{
   });
 });
 
-// ── MOBILE SIDEBAR ──
+// â”€â”€ MOBILE SIDEBAR â”€â”€
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebar-overlay').classList.toggle('open');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('open');}
 </script>
 </body>
 </html>
+
