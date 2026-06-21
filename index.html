@@ -62,7 +62,9 @@
     <header style="display:flex;justify-content:space-between;align-items:center;padding:16px 32px;">
       <h2 style="font-size:14px;color:var(--hotpink);font-family:'Pixelta','Press Start 2P',monospace;">♡ coquette</h2>
       <div id="headerBtns">
-        <button class="pixel-btn small terminal" onclick="document.getElementById('discordIdInput').focus();document.getElementById('ctaSection').scrollIntoView({behavior:'smooth'});">LOGIN</button>
+        <a href="https://discord.com/oauth2/authorize?client_id=1479748262591332392&response_type=code&redirect_uri=https%3A%2F%2Fakashsuu.github.io%2Fakashsuu%2F&scope=identify">
+          <button class="pixel-btn small terminal">LOGIN</button>
+        </a>
       </div>
     </header>
 
@@ -141,14 +143,13 @@
       </div>
 
       <div class="fade-in fade-in-delay-4" id="ctaSection" style="text-align:center;position:relative;z-index:10;">
-        <p style="font-size:16px;color:var(--blush);margin-bottom:16px;">enter your discord user id to get started</p>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;flex-direction:column;align-items:center;">
-          <input id="discordIdInput" type="text" placeholder="your discord user id (snowflake)"
-            style="width:320px;max-width:90%;padding:14px 16px;background:var(--dark3);border:4px solid var(--border);color:var(--pink);font-size:16px;text-align:center;outline:none;font-family:'VT323',monospace;">
-          <button class="pixel-btn terminal" id="loginBtn" onclick="handleLogin()" style="font-size:14px;padding:20px 40px;">
-            ♡ CONTINUE TO DASHBOARD
-          </button>
-          <p id="loginError" style="font-size:14px;color:var(--rose);margin-top:8px;display:none;"></p>
+        <p style="font-size:16px;color:var(--blush);margin-bottom:16px;">connect your discord account to get started</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <a href="https://discord.com/oauth2/authorize?client_id=1479748262591332392&response_type=code&redirect_uri=https%3A%2F%2Fakashsuu.github.io%2Fakashsuu%2F&scope=identify">
+            <button class="pixel-btn terminal" style="font-size:14px;padding:20px 40px;">
+              ♡ LOGIN WITH DISCORD
+            </button>
+          </a>
         </div>
       </div>
 
@@ -176,39 +177,46 @@
       navigator.serviceWorker.register('service-worker.js').catch(function(){});
     }
     var COQUETTE_API_KEY = 'cq_694695ad6a42caa20845c0221f5025b177550b0cef51263a';
-    function handleLogin() {
-      var userId = document.getElementById('discordIdInput').value.trim();
-      var errorEl = document.getElementById('loginError');
-      errorEl.style.display = 'none';
-      if (!userId) { errorEl.textContent = 'please enter your Discord user ID'; errorEl.style.display = 'block'; return; }
-      var btn = document.getElementById('loginBtn');
-      btn.disabled = true;
-      btn.textContent = 'VERIFYING...';
-      fetch('https://coapi.bot.nu/api/ping', {
-        method: 'POST',
-        headers: { 'x-api-key': COQUETTE_API_KEY, 'Content-Type': 'application/json' }
-      }).then(function(r) { return r.json(); }).then(function(data) {
-        if (data.success) {
-          localStorage.setItem('coquette_userId', userId);
-          window.location.href = 'dashboard.html';
-        } else {
-          throw new Error(data.error || 'API validation failed');
-        }
-      }).catch(function(err) {
-        errorEl.textContent = err.message;
-        errorEl.style.display = 'block';
-        btn.disabled = false;
-        btn.textContent = '♡ CONTINUE TO DASHBOARD';
-      });
+    var WORKER_URL = 'https://coquette-auth.your-worker.workers.dev'; // TODO: replace after deploying worker
+    var REDIRECT_URI = 'https://akashsuu.github.io/akashsuu/';
+
+    var params = new URLSearchParams(window.location.search);
+    var code = params.get('code');
+    if (code) {
+      (function() {
+        var toast = document.getElementById('errorToast');
+        toast.textContent = '♡ completing login...';
+        toast.className = 'toast show';
+        fetch(WORKER_URL + '/exchange', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: code })
+        }).then(function(r) { return r.json(); }).then(function(data) {
+          if (data.id) {
+            localStorage.setItem('coquette_userId', data.id);
+            if (data.username) localStorage.setItem('coquette_username', data.username);
+            window.location.href = 'dashboard.html';
+          } else {
+            toast.textContent = '\u2717 login failed: ' + (data.error || 'unknown error');
+            toast.className = 'toast error show';
+            if (history.replaceState) history.replaceState({}, '', window.location.pathname);
+          }
+        }).catch(function(err) {
+          toast.textContent = '\u2717 ' + err.message;
+          toast.className = 'toast error show';
+          if (history.replaceState) history.replaceState({}, '', window.location.pathname);
+        });
+      })();
     }
 
     var savedId = localStorage.getItem('coquette_userId');
+    var savedName = localStorage.getItem('coquette_username');
     if (savedId) {
       document.getElementById('headerBtns').style.display = 'none';
       document.getElementById('ctaSection').style.display = 'none';
       document.getElementById('userSection').style.display = '';
       document.getElementById('landingAvatar').src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQABNjN9GQAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAA0lEQVQI12P4z8BQDwAEgAF/QualzQAAAABJRU5ErkJggg==';
-      document.getElementById('landingName').textContent = savedId;
+      document.getElementById('landingName').textContent = savedName || savedId;
     }
 
     var video = document.getElementById('bgVideo');
