@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'Pixelta';
-  src: url('/fonts/pixelta.regular.ttf') format('truetype');
+  src: url('../fonts/pixelta.regular.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'TerminalGrotesque';
-  src: url('/fonts/terminal-grotesque.regular.ttf') format('truetype');
+  src: url('../fonts/terminal-grotesque.regular.ttf') format('truetype');
 }
 
 @font-face {

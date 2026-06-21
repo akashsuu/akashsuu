@@ -1,5 +1,5 @@
 const CACHE = 'coquette-v3';
-const OFFLINE_URL = '/offline.html';
+const OFFLINE_URL = 'offline.html';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

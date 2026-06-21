@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>coquette — dashboard</title>
   <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAi0lEQVRYhe2WwQ3AIAgFmYkRmIAZmIEZ3IMJ3IMZmIER3IMHDRrTj6BotIfeK4E38UsIEFAAfBcA3DMzMEmSJEk/stu5t2TdAXgC2gn4A9oJ+AaGqooxRgCASpmZ731VapRSBABAKeW2A2Jm7/u+quo4owPgZANmZkrpvM4cY0QIAcaY9/GNGRLAD/AClR8GRfWf2PUAAAAASUVORK5CYII=">
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#88c0a0">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
   <style>
     body { font-family: 'Segoe UI', Arial, sans-serif; }
     .pixel-btn { font-family: 'Segoe UI', Arial, sans-serif; }
@@ -291,7 +291,7 @@
           <span style="font-size:8px;color:var(--text-dim);">▼</span>
         </div>
         <div class="topbar-dropdown" id="topbarDropdown">
-          <a href="/setup">⚙ Settings</a>
+          <a href="setup.html">⚙ Settings</a>
           <div class="divider"></div>
           <button onclick="logout()">✕ Logout</button>
         </div>
@@ -354,12 +354,12 @@
       }
     })();
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js').catch(function(){});
+      navigator.serviceWorker.register('service-worker.js').catch(function(){});
     }
     (function() {
       var video = document.getElementById('bgVideo');
       var isMobile = window.matchMedia('(max-width: 768px)').matches;
-      var src = isMobile ? '/assets/android/android_background.mp4' : '/assets/pc/pc_background.mp4';
+      var src = isMobile ? 'assets/android/android_background.mp4' : 'assets/pc/pc_background.mp4';
       var source = document.createElement('source');
       source.src = src;
       source.type = 'video/mp4';
@@ -368,6 +368,6 @@
       video.play().catch(function(){});
     })();
   </script>
-  <script src="/js/main.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

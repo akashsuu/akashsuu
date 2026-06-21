@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>coquette — autoquest</title>
   <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAi0lEQVRYhe2WwQ3AIAgFmYkRmIAZmIEZ3IMJ3IMZmIER3IMHDRrTj6BotIfeK4E38UsIEFAAfBcA3DMzMEmSJEk/stu5t2TdAXgC2gn4A9oJ+AaGqooxRgCASpmZ731VapRSBABAKeW2A2Jm7/u+quo4owPgZANmZkrpvM4cY0QIAcaY9/GNGRLAD/AClR8GRfWf2PUAAAAASUVORK5CYII=">
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#88c0a0">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
   <style>
     #bgVideo {
       position: fixed;
@@ -157,7 +157,7 @@
           <img id="landingAvatar" class="avatar" src="" alt="" style="width:64px;height:64px;border:4px solid var(--border);">
           <div style="text-align:left;">
             <p style="font-size:18px;color:var(--pink);font-family:'Pixelta','Press Start 2P',monospace;margin-bottom:8px;" id="landingName">user</p>
-            <a href="/dashboard">
+            <a href="dashboard.html">
               <button class="pixel-btn" style="font-size:12px;">♡ GO TO DASHBOARD</button>
             </a>
           </div>
@@ -174,7 +174,7 @@
   <script>
     (function() {
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js').catch(function(){});
+        navigator.serviceWorker.register('service-worker.js').catch(function(){});
       }
       var COQUETTE_API_KEY = 'cq_694695ad6a42caa20845c0221f5025b177550b0cef51263a';
       function handleLogin() {
@@ -191,7 +191,7 @@
         }).then(function(r) { return r.json(); }).then(function(data) {
           if (data.success) {
             localStorage.setItem('coquette_userId', userId);
-            window.location.href = '/dashboard';
+            window.location.href = 'dashboard.html';
           } else {
             throw new Error(data.error || 'API validation failed');
           }
@@ -214,7 +214,7 @@
 
       var video = document.getElementById('bgVideo');
       var isMobile = window.matchMedia('(max-width: 768px)').matches;
-      var src = isMobile ? '/assets/android/android_background.mp4' : '/assets/pc/pc_background.mp4';
+      var src = isMobile ? 'assets/android/android_background.mp4' : 'assets/pc/pc_background.mp4';
       var source = document.createElement('source');
       source.src = src;
       source.type = 'video/mp4';
@@ -284,7 +284,7 @@
           overlay.className = 'cat-overlay';
           overlay.innerHTML =
             '<div class="cat-bubble">stop</div>' +
-            '<img src="/assets/both/cat.gif" class="cat-gif" alt="cat">';
+            '<img src="assets/both/cat.gif" class="cat-gif" alt="cat">';
           popup.appendChild(overlay);
           setTimeout(function() { overlay.remove(); }, 4000);
         });

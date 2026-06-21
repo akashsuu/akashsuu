@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>coquette — settings</title>
   <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAi0lEQVRYhe2WwQ3AIAgFmYkRmIAZmIEZ3IMJ3IMZmIER3IMHDRrTj6BotIfeK4E38UsIEFAAfBcA3DMzMEmSJEk/stu5t2TdAXgC2gn4A9oJ+AaGqooxRgCASpmZ731VapRSBABAKeW2A2Jm7/u+quo4owPgZANmZkrpvM4cY0QIAcaY9/GNGRLAD/AClR8GRfWf2PUAAAAASUVORK5CYII=">
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#88c0a0">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
   <style>
     @media (max-width: 768px) {
       header { padding: 12px 16px !important; }
@@ -36,7 +36,7 @@
   <div style="display:flex;flex-direction:column;min-height:100vh;position:relative;z-index:10;">
     <header style="display:flex;justify-content:space-between;align-items:center;padding:16px 32px;">
       <h2 style="font-size:14px;color:var(--hotpink);font-family:'Pixelta','Press Start 2P',monospace;">♡ coquette</h2>
-      <a href="/dashboard" id="backBtn">
+      <a href="dashboard.html" id="backBtn">
         <button class="pixel-btn small secondary">BACK</button>
       </a>
     </header>
@@ -115,12 +115,12 @@
       }
     })();
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js').catch(function(){});
+      navigator.serviceWorker.register('service-worker.js').catch(function(){});
     }
     (function() {
       var video = document.getElementById('bgVideo');
       var isMobile = window.matchMedia('(max-width: 768px)').matches;
-      var src = isMobile ? '/assets/android/android_background.mp4' : '/assets/pc/pc_background.mp4';
+      var src = isMobile ? 'assets/android/android_background.mp4' : 'assets/pc/pc_background.mp4';
       var source = document.createElement('source');
       source.src = src;
       source.type = 'video/mp4';
