@@ -1,12 +1,5 @@
 {
-  "name": "coquette-oauth",
+  "name": "coquette",
   "version": "1.0.0",
-  "description": "Coquette Discord OAuth exchange server",
-  "main": "oauth-server.js",
-  "scripts": {
-    "start": "node oauth-server.js"
-  },
-  "dependencies": {
-    "express": "^4.21.0"
-  }
+  "scripts": {}
 }

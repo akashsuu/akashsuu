@@ -1,27 +1,15 @@
-const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 3000;
-
 const DISCORD_CLIENT_ID = '1479748262591332392';
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const REDIRECT_URI = 'https://akashsuu.github.io/akashsuu/';
 
-if (!DISCORD_CLIENT_SECRET) {
-  console.error('FATAL: DISCORD_CLIENT_SECRET env var not set');
-  process.exit(1);
-}
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-app.use(express.json());
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'method not allowed' });
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.sendStatus(200);
-  next();
-});
-
-app.post('/exchange', async (req, res) => {
   try {
     const { code } = req.body;
     if (!code) return res.status(400).json({ error: 'missing code' });
@@ -33,7 +21,7 @@ app.post('/exchange', async (req, res) => {
         client_id: DISCORD_CLIENT_ID,
         client_secret: DISCORD_CLIENT_SECRET,
         grant_type: 'authorization_code',
-        code: code,
+        code,
         redirect_uri: REDIRECT_URI,
       })
     });
@@ -56,8 +44,4 @@ app.post('/exchange', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
-
-app.get('/health', (req, res) => res.json({ ok: true }));
-
-app.listen(PORT, () => console.log(`OAuth server running on port ${PORT}`));
+}
