@@ -1,6 +1,10 @@
 let user = null;
 let orbInterval = null;
 let questInterval = null;
+const COAPI = 'https://coapi.bot.nu';
+const COQUETTE_API_KEY = 'cq_694695ad6a42caa20845c0221f5025b177550b0cef51263a';
+
+function getUserId() { return localStorage.getItem('coquette_userId') || ''; }
 
 function toggleDropdown(e) {
   e.stopPropagation();
@@ -18,55 +22,58 @@ function toast(msg, type) {
   setTimeout(function() { el.classList.remove('show'); }, 4000);
 }
 
-async function api(path, opts) {
+async function api(method, path, opts) {
   opts = opts || {};
-  var headers = {};
+  var headers = { 'x-api-key': COQUETTE_API_KEY };
   var body = opts.body;
-  if (opts.method && opts.method !== 'GET') {
+  if (method && method !== 'GET') {
     headers['Content-Type'] = 'application/json';
-    if (!body) body = '{}';
+    if (!body) body = {};
+    if (typeof body === 'object') {
+      body.userId = getUserId();
+      body = JSON.stringify(body);
+    }
   }
-  var res = await fetch(path, {
+  var res = await fetch(COAPI + path, {
+    method: method,
     headers: headers,
     body: body,
-    method: opts.method || 'GET',
   });
   var data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Request failed');
+  if (!res.ok) throw new Error(data.error || data.message || 'Request failed');
   return data;
 }
 
 async function loadUser() {
-  try {
-    user = await api('/api/user');
-    var fallback = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQABNjN9GQAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAA0lEQVQI12P4z8BQDwAEgAF/QualzQAAAABJRU5ErkJggg==';
-    document.getElementById('userAvatar').src = user.avatar || fallback;
-    document.getElementById('userName').textContent = user.username;
-    document.getElementById('topbarAvatar').src = user.avatar || fallback;
-    document.getElementById('topbarName').textContent = user.username;
-    document.getElementById('userTag').textContent = '@' + (user.id || 'user');
+  var userId = getUserId();
+  if (!userId) { window.location.href = '/'; return; }
 
-    document.getElementById('startQuestBtn').disabled = false;
-    document.getElementById('welcomeSub').textContent = 'start a quest session';
+  user = { id: userId, username: userId, avatar: '', hasAccess: true, hasToken: !!localStorage.getItem('coquette_hasToken') };
+  var fallback = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQABNjN9GQAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAA0lEQVQI12P4z8BQDwAEgAF/QualzQAAAABJRU5ErkJggg==';
+  document.getElementById('userAvatar').src = user.avatar || fallback;
+  document.getElementById('userName').textContent = user.username;
+  document.getElementById('topbarAvatar').src = user.avatar || fallback;
+  document.getElementById('topbarName').textContent = user.username;
+  document.getElementById('userTag').textContent = '@' + user.id;
 
-    if (user.hasToken) {
-      document.getElementById('orbsSection').style.display = 'block';
-      fetchOrbs();
-      orbInterval = setInterval(fetchOrbs, 30000);
-    }
+  document.getElementById('startQuestBtn').disabled = false;
+  document.getElementById('welcomeSub').textContent = 'start a quest session';
 
-    checkQuestStatus();
-    questInterval = setInterval(checkQuestStatus, 10000);
-    loadFeedback();
-  } catch (err) {
-    window.location.href = '/';
+  if (user.hasToken) {
+    document.getElementById('orbsSection').style.display = 'block';
+    fetchOrbs();
+    orbInterval = setInterval(fetchOrbs, 30000);
   }
+
+  checkQuestStatus();
+  questInterval = setInterval(checkQuestStatus, 10000);
+  loadFeedback();
 }
 
 async function fetchOrbs() {
   try {
-    var data = await api('/api/orbs');
-    var count = Number(data.orbs).toLocaleString();
+    var data = await api('POST', '/api/orbs');
+    var count = Number(data.data?.orbs || data.orbs || 0).toLocaleString();
     document.getElementById('orbCount').textContent = count;
     document.getElementById('orbsBig').textContent = count;
     document.getElementById('orbDisplay').style.display = 'flex';
@@ -81,7 +88,7 @@ async function startQuest() {
     btn.disabled = true;
     btn.textContent = 'STARTING...';
 
-    await api('/api/quest/start', { method: 'POST' });
+    await api('POST', '/api/quest');
     toast('Quest session queued!');
     document.getElementById('questStatus').textContent = 'queued';
     document.getElementById('questStatus').style.color = 'var(--peach)';
@@ -100,9 +107,9 @@ async function startQuest() {
 
 async function checkQuestStatus() {
   try {
-    var data = await api('/api/quest/status');
-    if (data.progress) {
-      var p = data.progress;
+    var data = await api('POST', '/api/status');
+    if (data.data.progress) {
+      var p = data.data.progress;
       document.getElementById('questProgress').style.display = 'block';
 
       if (p.noQuests) {
@@ -117,19 +124,24 @@ async function checkQuestStatus() {
         return;
       }
 
-      var allDone = p.complete || (p.quests && p.quests.every(function(q) { return q.status === 'done'; }));
-      document.getElementById('startQuestBtn').disabled = data.running && !allDone;
-      document.getElementById('startQuestBtn').textContent = data.running && !allDone ? '♡ IN PROGRESS' : '♡ COMPLETE QUESTS';
-      document.getElementById('questStatus').textContent = data.running && !allDone ? 'running' : 'complete';
-      document.getElementById('questStatus').style.color = data.running && !allDone ? 'var(--peach)' : 'var(--mint)';
-      document.getElementById('progressText').textContent = p.done + ' / ' + p.total;
-      document.getElementById('progressBar').style.width = (p.total > 0 ? (p.done / p.total) * 100 : 0) + '%';
+      var quests = p.quests || [];
+      var done = quests.filter(function(q) { return q.status === 'done'; }).length;
+      var total = quests.length;
+      var running = data.data.running;
+      var allDone = p.complete || (quests.length > 0 && done === total);
+
+      document.getElementById('startQuestBtn').disabled = running && !allDone;
+      document.getElementById('startQuestBtn').textContent = running && !allDone ? '♡ IN PROGRESS' : '♡ COMPLETE QUESTS';
+      document.getElementById('questStatus').textContent = running && !allDone ? 'running' : 'complete';
+      document.getElementById('questStatus').style.color = running && !allDone ? 'var(--peach)' : 'var(--mint)';
+      document.getElementById('progressText').textContent = done + ' / ' + total;
+      document.getElementById('progressBar').style.width = (total > 0 ? (done / total) * 100 : 0) + '%';
       document.getElementById('progressStatusText').textContent =
-        data.running && p.quests && p.quests.some(function(q) { return q.status === 'running'; }) ? 'running' : p.done === p.total ? 'complete' : 'done';
+        running && quests.some(function(q) { return q.status === 'running'; }) ? 'running' : done === total ? 'complete' : 'done';
 
       var listEl = document.getElementById('questList');
-      if (p.quests) {
-        listEl.innerHTML = p.quests.map(function(q) {
+      if (quests.length > 0) {
+        listEl.innerHTML = quests.map(function(q) {
           var icon = q.status === 'done' ? '✦' : q.status === 'running' ? '♡' : '✗';
           var color = q.status === 'done' ? 'var(--mint)' : q.status === 'running' ? 'var(--peach)' : 'var(--rose)';
           return '<div class="quest-item">' +
@@ -151,42 +163,13 @@ async function checkQuestStatus() {
 }
 
 async function loadFeedback() {
-  try {
-    var data = await api('/api/feedback');
-    var list = document.getElementById('feedbackList');
-    if (!data.feedback || data.feedback.length === 0) {
-      list.innerHTML = '<span style="color:var(--text-dim);font-size:10px;">no feedback yet</span>';
-      return;
-    }
-    list.innerHTML = data.feedback.map(function(f) {
-      var time = '';
-      if (f.timestamp) {
-        var d = new Date(f.timestamp);
-        var now = new Date();
-        var diff = (now - d) / 1000;
-        if (diff < 60) time = 'now';
-        else if (diff < 3600) time = Math.floor(diff / 60) + 'm';
-        else if (diff < 86400) time = Math.floor(diff / 3600) + 'h';
-        else time = Math.floor(diff / 86400) + 'd';
-      }
-      return '<div class="fb-item">' +
-        '<div class="fb-item-top">' +
-        '<img class="fb-avatar" src="' + f.avatar + '">' +
-        '<span class="fb-author">' + f.author + '</span>' +
-        (time ? '<span class="fb-time">' + time + '</span>' : '') +
-        '</div>' +
-        '<div class="fb-content">' + f.content + '</div>' +
-        '</div>';
-    }).join('');
-  } catch {
-    document.getElementById('feedbackList').innerHTML = '<span style="color:var(--text-dim);font-size:10px;">failed to load</span>';
-  }
+  var list = document.getElementById('feedbackList');
+  if (list) list.innerHTML = '<span style="color:var(--text-dim);font-size:10px;">no feedback yet</span>';
 }
 
 async function logout() {
-  try {
-    await api('/api/logout', { method: 'POST' });
-  } catch {}
+  localStorage.removeItem('coquette_userId');
+  localStorage.removeItem('coquette_hasToken');
   window.location.href = '/';
 }
 

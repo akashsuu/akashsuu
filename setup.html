@@ -8,8 +8,6 @@
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#88c0a0">
   <link rel="stylesheet" href="/css/style.css">
-  <script>(function(s){s.dataset.zone='11176650',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-  <script>(function(s){s.dataset.zone='11176894',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
   <style>
     @media (max-width: 768px) {
       header { padding: 12px 16px !important; }
@@ -110,6 +108,12 @@
 
   <div id="toast" class="toast"></div>
   <script>
+    (function() {
+      if (!localStorage.getItem('coquette_userId')) {
+        window.location.href = '/';
+        return;
+      }
+    })();
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js').catch(function(){});
     }
@@ -125,11 +129,29 @@
       video.play().catch(function(){});
     })();
 
+    var COAPI = 'https://coapi.bot.nu';
+    var COQUETTE_API_KEY = 'cq_694695ad6a42caa20845c0221f5025b177550b0cef51263a';
+    function getUserId() { return localStorage.getItem('coquette_userId') || ''; }
+
     function toast(msg, type) {
       var el = document.getElementById('toast');
       el.textContent = msg;
       el.className = 'toast ' + (type || 'success') + ' show';
       setTimeout(function() { el.classList.remove('show'); }, 4000);
+    }
+
+    async function coapiCall(method, endpoint, body) {
+      var headers = { 'x-api-key': COQUETTE_API_KEY, 'Content-Type': 'application/json' };
+      if (!body) body = {};
+      body.userId = getUserId();
+      var res = await fetch(COAPI + endpoint, {
+        method: method,
+        headers: headers,
+        body: JSON.stringify(body),
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || data.message || 'Request failed');
+      return data;
     }
 
     async function saveToken() {
@@ -144,15 +166,10 @@
         btn.disabled = true;
         btn.textContent = 'VALIDATING...';
 
-        var res = await fetch('/api/token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: token })
-        });
-        var data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-
-        toast('token linked as ' + data.username);
+        var data = await coapiCall('POST', '/api/tokens', { args: ['save', token] });
+        var username = data.data?.username || data.username || 'user';
+        localStorage.setItem('coquette_hasToken', '1');
+        toast('token linked as ' + username);
         setTimeout(function() { location.reload(); }, 1000);
       } catch (err) {
         errorEl.textContent = err.message;
@@ -176,15 +193,10 @@
         btn.disabled = true;
         btn.textContent = 'VALIDATING...';
 
-        var res = await fetch('/api/token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: token })
-        });
-        var data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-
-        toast('token updated as ' + data.username);
+        var data = await coapiCall('POST', '/api/tokens', { args: ['save', token] });
+        var username = data.data?.username || data.username || 'user';
+        localStorage.setItem('coquette_hasToken', '1');
+        toast('token updated as ' + username);
         setTimeout(function() { location.reload(); }, 1000);
       } catch (err) {
         errorEl.textContent = err.message;
@@ -199,7 +211,8 @@
     async function removeToken() {
       if (!confirm('remove your linked token?')) return;
       try {
-        await fetch('/api/token', { method: 'DELETE' });
+        await coapiCall('POST', '/api/tokens', { args: ['clear'] });
+        localStorage.removeItem('coquette_hasToken');
         toast('token removed');
         setTimeout(function() { location.reload(); }, 1000);
       } catch (err) {
@@ -208,16 +221,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      fetch('/api/user').then(function(r) { return r.json(); }).then(function(data) {
-        if (!data || !data.id) { window.location.href = '/'; return; }
-        if (data.hasToken) {
-          document.getElementById('noTokenSection').style.display = 'none';
-          document.getElementById('hasTokenSection').style.display = '';
-        } else {
-          document.getElementById('noTokenSection').style.display = '';
-          document.getElementById('hasTokenSection').style.display = 'none';
-        }
-      }).catch(function() { window.location.href = '/'; });
+      if (localStorage.getItem('coquette_hasToken')) {
+        document.getElementById('noTokenSection').style.display = 'none';
+        document.getElementById('hasTokenSection').style.display = '';
+      } else {
+        document.getElementById('noTokenSection').style.display = '';
+        document.getElementById('hasTokenSection').style.display = 'none';
+      }
     });
   </script>
 </body>
