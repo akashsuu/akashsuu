@@ -172,136 +172,134 @@
 
   <div id="errorToast" class="toast error"></div>
   <script>
-    (function() {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('service-worker.js').catch(function(){});
-      }
-      var COQUETTE_API_KEY = 'cq_694695ad6a42caa20845c0221f5025b177550b0cef51263a';
-      function handleLogin() {
-        var userId = document.getElementById('discordIdInput').value.trim();
-        var errorEl = document.getElementById('loginError');
-        errorEl.style.display = 'none';
-        if (!userId) { errorEl.textContent = 'please enter your Discord user ID'; errorEl.style.display = 'block'; return; }
-        var btn = document.getElementById('loginBtn');
-        btn.disabled = true;
-        btn.textContent = 'VERIFYING...';
-        fetch('https://coapi.bot.nu/api/ping', {
-          method: 'POST',
-          headers: { 'x-api-key': COQUETTE_API_KEY, 'Content-Type': 'application/json' }
-        }).then(function(r) { return r.json(); }).then(function(data) {
-          if (data.success) {
-            localStorage.setItem('coquette_userId', userId);
-            window.location.href = 'dashboard.html';
-          } else {
-            throw new Error(data.error || 'API validation failed');
-          }
-        }).catch(function(err) {
-          errorEl.textContent = err.message;
-          errorEl.style.display = 'block';
-          btn.disabled = false;
-          btn.textContent = '♡ CONTINUE TO DASHBOARD';
-        });
-      }
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(function(){});
+    }
+    var COQUETTE_API_KEY = 'cq_694695ad6a42caa20845c0221f5025b177550b0cef51263a';
+    function handleLogin() {
+      var userId = document.getElementById('discordIdInput').value.trim();
+      var errorEl = document.getElementById('loginError');
+      errorEl.style.display = 'none';
+      if (!userId) { errorEl.textContent = 'please enter your Discord user ID'; errorEl.style.display = 'block'; return; }
+      var btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.textContent = 'VERIFYING...';
+      fetch('https://coapi.bot.nu/api/ping', {
+        method: 'POST',
+        headers: { 'x-api-key': COQUETTE_API_KEY, 'Content-Type': 'application/json' }
+      }).then(function(r) { return r.json(); }).then(function(data) {
+        if (data.success) {
+          localStorage.setItem('coquette_userId', userId);
+          window.location.href = 'dashboard.html';
+        } else {
+          throw new Error(data.error || 'API validation failed');
+        }
+      }).catch(function(err) {
+        errorEl.textContent = err.message;
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = '♡ CONTINUE TO DASHBOARD';
+      });
+    }
 
-      var savedId = localStorage.getItem('coquette_userId');
-      if (savedId) {
-        document.getElementById('headerBtns').style.display = 'none';
-        document.getElementById('ctaSection').style.display = 'none';
-        document.getElementById('userSection').style.display = '';
-        document.getElementById('landingAvatar').src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQABNjN9GQAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAA0lEQVQI12P4z8BQDwAEgAF/QualzQAAAABJRU5ErkJggg==';
-        document.getElementById('landingName').textContent = savedId;
-      }
+    var savedId = localStorage.getItem('coquette_userId');
+    if (savedId) {
+      document.getElementById('headerBtns').style.display = 'none';
+      document.getElementById('ctaSection').style.display = 'none';
+      document.getElementById('userSection').style.display = '';
+      document.getElementById('landingAvatar').src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQABNjN9GQAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAA0lEQVQI12P4z8BQDwAEgAF/QualzQAAAABJRU5ErkJggg==';
+      document.getElementById('landingName').textContent = savedId;
+    }
 
-      var video = document.getElementById('bgVideo');
-      var isMobile = window.matchMedia('(max-width: 768px)').matches;
-      var src = isMobile ? 'assets/android/android_background.mp4' : 'assets/pc/pc_background.mp4';
-      var source = document.createElement('source');
-      source.src = src;
-      source.type = 'video/mp4';
-      video.appendChild(source);
-      video.addEventListener('canplay', function() { video.classList.add('ready'); });
-      video.play().catch(function(){});
+    var video = document.getElementById('bgVideo');
+    var isMobile = window.matchMedia('(max-width: 768px)').matches;
+    var src = isMobile ? 'assets/android/android_background.mp4' : 'assets/pc/pc_background.mp4';
+    var source = document.createElement('source');
+    source.src = src;
+    source.type = 'video/mp4';
+    video.appendChild(source);
+    video.addEventListener('canplay', function() { video.classList.add('ready'); });
+    video.play().catch(function(){});
 
-      var popups = document.querySelectorAll('.win-popup');
+    var popups = document.querySelectorAll('.win-popup');
+    popups.forEach(function(popup) {
+      var x = parseInt(popup.getAttribute('data-x')) || 0;
+      var y = parseInt(popup.getAttribute('data-y')) || 0;
+      var cx = window.innerWidth / 2 - 105;
+      var cy = window.innerHeight / 2 - 60;
+      popup.style.left = (cx + x) + 'px';
+      popup.style.top = (cy + y) + 'px';
+      popup.style.position = 'absolute';
+
+      var titlebar = popup.querySelector('.win-titlebar');
+      var offsetX = 0, offsetY = 0;
+
+      titlebar.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('win-btn')) return;
+        e.preventDefault();
+        var rect = popup.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        popup.style.cursor = 'grabbing';
+        popup.style.zIndex = 999;
+
+        function onMove(ev) {
+          var layer = document.getElementById('popupLayer');
+          var lr = layer.getBoundingClientRect();
+          var nx = ev.clientX - lr.left - offsetX;
+          var ny = ev.clientY - lr.top - offsetY;
+          popup.style.left = Math.max(0, Math.min(lr.width - 210, nx)) + 'px';
+          popup.style.top = Math.max(0, Math.min(lr.height - 60, ny)) + 'px';
+        }
+
+        function onUp() {
+          popup.style.cursor = '';
+          popup.style.zIndex = '';
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        }
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+
+      var minBtn = popup.querySelector('.win-min');
+      var closeBtn = popup.querySelector('.win-close');
+      var body = popup.querySelector('.win-body');
+
+      minBtn.addEventListener('click', function() {
+        if (body.style.display === 'none') {
+          body.style.display = 'flex';
+          minBtn.textContent = '_';
+        } else {
+          body.style.display = 'none';
+          minBtn.textContent = '□';
+        }
+      });
+
+      closeBtn.addEventListener('click', function() {
+        if (popup.querySelector('.cat-overlay')) return;
+        var overlay = document.createElement('div');
+        overlay.className = 'cat-overlay';
+        overlay.innerHTML =
+          '<div class="cat-bubble">stop</div>' +
+          '<img src="assets/both/cat.gif" class="cat-gif" alt="cat">';
+        popup.appendChild(overlay);
+        setTimeout(function() { overlay.remove(); }, 4000);
+      });
+    });
+
+    window.addEventListener('resize', function() {
       popups.forEach(function(popup) {
+        if (popup.style.display === 'none') return;
         var x = parseInt(popup.getAttribute('data-x')) || 0;
         var y = parseInt(popup.getAttribute('data-y')) || 0;
         var cx = window.innerWidth / 2 - 105;
         var cy = window.innerHeight / 2 - 60;
         popup.style.left = (cx + x) + 'px';
         popup.style.top = (cy + y) + 'px';
-        popup.style.position = 'absolute';
-
-        var titlebar = popup.querySelector('.win-titlebar');
-        var offsetX = 0, offsetY = 0, mouseX = 0, mouseY = 0;
-
-        titlebar.addEventListener('mousedown', function(e) {
-          if (e.target.classList.contains('win-btn')) return;
-          e.preventDefault();
-          var rect = popup.getBoundingClientRect();
-          offsetX = e.clientX - rect.left;
-          offsetY = e.clientY - rect.top;
-          popup.style.cursor = 'grabbing';
-          popup.style.zIndex = 999;
-
-          function onMove(ev) {
-            var layer = document.getElementById('popupLayer');
-            var lr = layer.getBoundingClientRect();
-            var nx = ev.clientX - lr.left - offsetX;
-            var ny = ev.clientY - lr.top - offsetY;
-            popup.style.left = Math.max(0, Math.min(lr.width - 210, nx)) + 'px';
-            popup.style.top = Math.max(0, Math.min(lr.height - 60, ny)) + 'px';
-          }
-
-          function onUp() {
-            popup.style.cursor = '';
-            popup.style.zIndex = '';
-            document.removeEventListener('mousemove', onMove);
-            document.removeEventListener('mouseup', onUp);
-          }
-
-          document.addEventListener('mousemove', onMove);
-          document.addEventListener('mouseup', onUp);
-        });
-
-        var minBtn = popup.querySelector('.win-min');
-        var closeBtn = popup.querySelector('.win-close');
-        var body = popup.querySelector('.win-body');
-
-        minBtn.addEventListener('click', function() {
-          if (body.style.display === 'none') {
-            body.style.display = 'flex';
-            minBtn.textContent = '_';
-          } else {
-            body.style.display = 'none';
-            minBtn.textContent = '□';
-          }
-        });
-
-        closeBtn.addEventListener('click', function() {
-          if (popup.querySelector('.cat-overlay')) return;
-          var overlay = document.createElement('div');
-          overlay.className = 'cat-overlay';
-          overlay.innerHTML =
-            '<div class="cat-bubble">stop</div>' +
-            '<img src="assets/both/cat.gif" class="cat-gif" alt="cat">';
-          popup.appendChild(overlay);
-          setTimeout(function() { overlay.remove(); }, 4000);
-        });
       });
-
-      window.addEventListener('resize', function() {
-        popups.forEach(function(popup) {
-          if (popup.style.display === 'none') return;
-          var x = parseInt(popup.getAttribute('data-x')) || 0;
-          var y = parseInt(popup.getAttribute('data-y')) || 0;
-          var cx = window.innerWidth / 2 - 105;
-          var cy = window.innerHeight / 2 - 60;
-          popup.style.left = (cx + x) + 'px';
-          popup.style.top = (cy + y) + 'px';
-        });
-      });
-    })();
+    });
   </script>
 </body>
 </html>
