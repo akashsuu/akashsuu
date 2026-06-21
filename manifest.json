@@ -1,0 +1,16 @@
+{
+  "name": "Coquette Autoquest",
+  "short_name": "Coquette",
+  "description": "Coquette — autoquest dashboard",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#88c0a0",
+  "icons": [
+    {
+      "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAi0lEQVRYhe2WwQ3AIAgFmYkRmIAZmIEZ3IMJ3IMZmIER3IMHDRrTj6BotIfeK4E38UsIEFAAfBcA3DMzMEmSJEk/stu5t2TdAXgC2gn4A9oJ+AaGqooxRgCASpmZ731VapRSBABAKeW2A2Jm7/u+quo4owPgZANmZkrpvM4cY0QIAcaY9/GNGRLAD/AClR8GRfWf2PUAAAAASUVORK5CYII=",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ]
+}

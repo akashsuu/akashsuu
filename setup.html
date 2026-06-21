@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>coquette — settings</title>
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAi0lEQVRYhe2WwQ3AIAgFmYkRmIAZmIEZ3IMJ3IMZmIER3IMHDRrTj6BotIfeK4E38UsIEFAAfBcA3DMzMEmSJEk/stu5t2TdAXgC2gn4A9oJ+AaGqooxRgCASpmZ731VapRSBABAKeW2A2Jm7/u+quo4owPgZANmZkrpvM4cY0QIAcaY9/GNGRLAD/AClR8GRfWf2PUAAAAASUVORK5CYII=">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#88c0a0">
+  <link rel="stylesheet" href="/css/style.css">
+  <script>(function(s){s.dataset.zone='11176650',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+  <script>(function(s){s.dataset.zone='11176894',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+  <style>
+    @media (max-width: 768px) {
+      header { padding: 12px 16px !important; }
+      header h2 { font-size: 12px !important; }
+      main { padding: 20px 12px !important; }
+      .pixel-card { padding: 16px !important; }
+    }
+    .token-display {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      background: var(--dark3);
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      word-break: break-all;
+      text-align: center;
+    }
+  </style>
+</head>
+<body style="background:#0d0d1a;">
+  <div class="scanlines"></div>
+  <div class="pixel-grid"></div>
+
+  <video id="bgVideo" autoplay muted loop playsinline style="position:fixed;top:50%;left:50%;min-width:100%;min-height:100%;transform:translate(-50%,-50%);object-fit:cover;z-index:0;opacity:0;transition:opacity 1s;"></video>
+
+  <div style="display:flex;flex-direction:column;min-height:100vh;position:relative;z-index:10;">
+    <header style="display:flex;justify-content:space-between;align-items:center;padding:16px 32px;">
+      <h2 style="font-size:14px;color:var(--hotpink);font-family:'Pixelta','Press Start 2P',monospace;">♡ coquette</h2>
+      <a href="/dashboard" id="backBtn">
+        <button class="pixel-btn small secondary">BACK</button>
+      </a>
+    </header>
+
+    <main style="flex:1;display:flex;flex-direction:column;align-items:center;padding:40px 20px;">
+      <div class="fade-in pixel-card" style="max-width:560px;width:100%;text-align:center;">
+        <div style="font-size:40px;color:var(--hotpink);margin-bottom:12px;" class="floating">♡</div>
+        <h1 style="font-size:18px;color:var(--pink);margin-bottom:12px;line-height:1.4;">SETTINGS</h1>
+
+        <div class="pixel-divider"></div>
+
+        <div id="noTokenSection" style="padding:16px 0;">
+          <p style="font-size:16px;color:var(--rose);margin-bottom:16px;">
+            ✗ no token linked
+          </p>
+          <a href="https://discord.gg/rG4NPSAFm" target="_blank">
+            <button class="pixel-btn" style="font-size:14px;padding:18px 36px;">
+              ♡ JOIN DISCORD SERVER
+            </button>
+          </a>
+          <p style="font-size:14px;color:var(--text-dim);margin-top:12px;">
+            use <strong style="color:var(--mint);">.quest</strong> in the server to link your token
+          </p>
+
+          <div class="pixel-divider" style="margin:20px 0;"></div>
+
+          <p style="font-size:14px;color:var(--text-dim);margin-bottom:12px;">
+            or paste your token directly
+          </p>
+          <input id="tokenInput" type="password" placeholder="paste your discord token"
+            style="width:100%;padding:12px;background:var(--dark3);border:2px solid var(--border);color:var(--pink);font-size:14px;text-align:center;outline:none;box-sizing:border-box;">
+          <p id="tokenError" style="font-size:12px;color:var(--rose);margin-top:8px;display:none;"></p>
+          <button id="linkBtn" class="pixel-btn" onclick="saveToken()" style="width:100%;justify-content:center;margin-top:12px;font-size:14px;padding:18px;">
+            ♡ LINK TOKEN
+          </button>
+        </div>
+
+        <div id="hasTokenSection" style="padding:16px 0;display:none;">
+          <p style="font-size:14px;color:var(--mint);margin-bottom:16px;">
+            ✓ token linked
+          </p>
+          <div class="token-display" id="tokenPreview">••••••••••••••••</div>
+
+          <div class="pixel-divider" style="margin:20px 0;"></div>
+
+          <p style="font-size:14px;color:var(--text-dim);margin-bottom:12px;">
+            update your token
+          </p>
+          <input id="updateTokenInput" type="password" placeholder="paste new discord token"
+            style="width:100%;padding:12px;background:var(--dark3);border:2px solid var(--border);color:var(--pink);font-size:14px;text-align:center;outline:none;box-sizing:border-box;">
+          <p id="updateTokenError" style="font-size:12px;color:var(--rose);margin-top:8px;display:none;"></p>
+          <button id="updateBtn" class="pixel-btn" onclick="updateToken()" style="width:100%;justify-content:center;margin-top:12px;font-size:14px;padding:18px;">
+            ♡ UPDATE TOKEN
+          </button>
+
+          <div class="pixel-divider" style="margin:20px 0;"></div>
+
+          <button class="pixel-btn danger" onclick="removeToken()" style="width:100%;justify-content:center;font-size:14px;padding:18px;">
+            ✕ REMOVE TOKEN
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <footer style="text-align:center;padding:20px;font-size:12px;color:var(--text-dim);">
+      𝜗𝜚 <a href="https://discord.gg/rG4NPSAFm" style="color:var(--hotpink);text-decoration:none;">.gg/coquettes</a>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').catch(function(){});
+    }
+    (function() {
+      var video = document.getElementById('bgVideo');
+      var isMobile = window.matchMedia('(max-width: 768px)').matches;
+      var src = isMobile ? '/assets/android/android_background.mp4' : '/assets/pc/pc_background.mp4';
+      var source = document.createElement('source');
+      source.src = src;
+      source.type = 'video/mp4';
+      video.appendChild(source);
+      video.addEventListener('canplay', function() { video.classList.add('ready'); });
+      video.play().catch(function(){});
+    })();
+
+    function toast(msg, type) {
+      var el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = 'toast ' + (type || 'success') + ' show';
+      setTimeout(function() { el.classList.remove('show'); }, 4000);
+    }
+
+    async function saveToken() {
+      var input = document.getElementById('tokenInput');
+      var token = input.value.trim();
+      var errorEl = document.getElementById('tokenError');
+      errorEl.style.display = 'none';
+      if (!token) { errorEl.textContent = 'paste your Discord token'; errorEl.style.display = 'block'; return; }
+
+      try {
+        var btn = document.getElementById('linkBtn');
+        btn.disabled = true;
+        btn.textContent = 'VALIDATING...';
+
+        var res = await fetch('/api/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: token })
+        });
+        var data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        toast('token linked as ' + data.username);
+        setTimeout(function() { location.reload(); }, 1000);
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.style.display = 'block';
+        toast(err.message, 'error');
+      } finally {
+        document.getElementById('linkBtn').disabled = false;
+        document.getElementById('linkBtn').textContent = '♡ LINK TOKEN';
+      }
+    }
+
+    async function updateToken() {
+      var input = document.getElementById('updateTokenInput');
+      var token = input.value.trim();
+      var errorEl = document.getElementById('updateTokenError');
+      errorEl.style.display = 'none';
+      if (!token) { errorEl.textContent = 'paste your new Discord token'; errorEl.style.display = 'block'; return; }
+
+      try {
+        var btn = document.getElementById('updateBtn');
+        btn.disabled = true;
+        btn.textContent = 'VALIDATING...';
+
+        var res = await fetch('/api/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: token })
+        });
+        var data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        toast('token updated as ' + data.username);
+        setTimeout(function() { location.reload(); }, 1000);
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.style.display = 'block';
+        toast(err.message, 'error');
+      } finally {
+        document.getElementById('updateBtn').disabled = false;
+        document.getElementById('updateBtn').textContent = '♡ UPDATE TOKEN';
+      }
+    }
+
+    async function removeToken() {
+      if (!confirm('remove your linked token?')) return;
+      try {
+        await fetch('/api/token', { method: 'DELETE' });
+        toast('token removed');
+        setTimeout(function() { location.reload(); }, 1000);
+      } catch (err) {
+        toast(err.message, 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      fetch('/api/user').then(function(r) { return r.json(); }).then(function(data) {
+        if (!data || !data.id) { window.location.href = '/'; return; }
+        if (data.hasToken) {
+          document.getElementById('noTokenSection').style.display = 'none';
+          document.getElementById('hasTokenSection').style.display = '';
+        } else {
+          document.getElementById('noTokenSection').style.display = '';
+          document.getElementById('hasTokenSection').style.display = 'none';
+        }
+      }).catch(function() { window.location.href = '/'; });
+    });
+  </script>
+</body>
+</html>

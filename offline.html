@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>coquette — offline</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a;
+      color: #c8e0d0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+    .offline-card {
+      max-width: 400px;
+    }
+    .offline-card h1 {
+      font-size: 64px;
+      color: #88c0a0;
+      margin-bottom: 12px;
+    }
+    .offline-card .message {
+      color: #7a9a8a;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .offline-card .brand {
+      color: #88c0a0;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .offline-card .sub {
+      font-size: 12px;
+      color: #5a7a6a;
+      line-height: 1.8;
+    }
+    .offline-card button {
+      margin-top: 24px;
+      background: #88c0a0;
+      color: #0a0a0a;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .offline-card button:hover { background: #a0d8b8; }
+  </style>
+</head>
+<body>
+  <div class="offline-card">
+    <h1>♡</h1>
+    <div class="message">server is offline</div>
+    <div class="brand">coquette</div>
+    <div class="sub">powered by coquette<br>made by akashsuu</div>
+    <button onclick="window.location.reload()">retry</button>
+  </div>
+</body>
+</html>
