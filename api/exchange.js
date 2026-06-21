@@ -1,6 +1,6 @@
 const DISCORD_CLIENT_ID = '1479748262591332392';
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-const REDIRECT_URI = 'https://akashsuu.github.io/akashsuu/';
+const REDIRECT_URI = 'https://akashsuu.vercel.app';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
