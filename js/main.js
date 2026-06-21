@@ -48,8 +48,7 @@ async function loadUser() {
   var userId = getUserId();
   if (!userId) { window.location.href = '/'; return; }
 
-  var savedName = localStorage.getItem('coquette_username');
-  user = { id: userId, username: savedName || userId, avatar: '', hasAccess: true, hasToken: !!localStorage.getItem('coquette_hasToken') };
+  user = { id: userId, username: userId, avatar: '', hasAccess: true, hasToken: !!localStorage.getItem('coquette_hasToken') };
   var fallback = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQABNjN9GQAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAA0lEQVQI12P4z8BQDwAEgAF/QualzQAAAABJRU5ErkJggg==';
   document.getElementById('userAvatar').src = user.avatar || fallback;
   document.getElementById('userName').textContent = user.username;
@@ -170,7 +169,6 @@ async function loadFeedback() {
 
 async function logout() {
   localStorage.removeItem('coquette_userId');
-  localStorage.removeItem('coquette_username');
   localStorage.removeItem('coquette_hasToken');
   window.location.href = '/';
 }
