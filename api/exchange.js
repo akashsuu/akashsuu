@@ -15,7 +15,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    let body = req.body;
+    if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
+      const raw = await new Promise(resolve => {
+        let data = '';
+        req.on('data', chunk => data += chunk);
+        req.on('end', () => resolve(data));
+      });
+      body = raw ? JSON.parse(raw) : {};
+    }
     const code = body.code;
     if (!code) return res.status(400).json({ error: 'missing code' });
 
