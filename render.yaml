@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: coquette-oauth
+    env: node
+    buildCommand: npm install
+    startCommand: node oauth-server.js
+    envVars:
+      - key: DISCORD_CLIENT_SECRET
+        sync: false
