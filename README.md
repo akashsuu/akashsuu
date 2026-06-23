@@ -17,7 +17,6 @@
 <li>🔭 Passionate about AI, ML, Deep Learning, and Generative AI</li>
 <li>🌱 Currently learning Advanced Python, Deep Learning & Full Stack Development</li>
 <li>👨‍💻 All projects available at <a href="https://github.com/akashsuu">GitHub</a></li>
-<li>🎯 Goal: Become a skilled <strong>AI Engineer</strong> and <strong>Software Developer</strong></li>
 <li>⚡ I enjoy building AI chatbots, ML models, automation tools, and real-world solutions</li>
 </ul>
 </details>
