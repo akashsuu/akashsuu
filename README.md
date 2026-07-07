@@ -1,4 +1,4 @@
-<h1 align="center">Hi <img src="https://user-images.githubusercontent.com/44104676/173990923-48b66056-0bff-472a-b5bf-faab4146e950.gif" height="40"> I'm Akash</h1>
+<h1 align="center">Hi humans <img src="https://user-images.githubusercontent.com/44104676/173990923-48b66056-0bff-472a-b5bf-faab4146e950.gif" height="40"> I'm Akash</h1>
 
 <p align="center">
     <img src="https://img.shields.io/badge/Focus-AI%20%26%20ML-C2FFC7?style=flat" />
