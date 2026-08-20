@@ -22,7 +22,7 @@
 </details>
 
 <details open>
-<summary>🛠️ Skills & Technologies</summary>
+<summary> Skills & Technologies</summary>
 
 <h3 align="center">Programming Languages</h3>
 <p align="center">
@@ -65,7 +65,7 @@
 <details open>
 <summary>📊 GitHub Stats</summary>
 <p align="center">
-    <img src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api?username=akashsuu&show_icons=true&theme=dark&title_color=C2FFC7&icon_color=CB9DF0&text_color=ffffff&bg_color=000000" alt="akashsuu's GitHub stats" />
+    <img src="https://github-readme-stats.vercel.app/api?username=akashsuu&show_icons=true&theme=dark&title_color=C2FFC7&icon_color=CB9DF0&text_color=ffffff&bg_color=000000" alt="akashsuu's GitHub stats" />
 </p>
 
 <p align="center">
@@ -77,7 +77,7 @@
 </p>
 
 <p align="center">
-    <img src="https://github-profile-trophy.vercel.app/?username=akashsuu&theme=dark&column=-1&title_color=C2FFC7&icon_color=CB9DF0&text_color=ffffff&bg_color=000000" alt="akashsuu's trophies"/>
+    <img src="https://github-profile-trophy.vercel.app/?username=akashsuu&theme=dark" alt="GitHub Trophies"/>
 </p>
 
 <h3 align="center">Contribution Snake</h3>
