@@ -13,11 +13,11 @@
 <details open>
 <summary>About Me</summary>
 <ul>
-<li> BCA Student specializing in <strong>Artificial Intelligence & Machine Learning</strong></li>
-<li> Passionate about AI, ML, Deep Learning, and Generative AI</li>
-<li> Currently learning Advanced Python, Deep Learning & Full Stack Development</li>
-<li> All projects available at <a href="https://github.com/akashsuu">GitHub</a></li>
-<li> I enjoy building AI chatbots, ML models, automation tools, and real-world solutions</li>
+<li> BCA Student specializing in <strong>Artificial Intelligence & Machine Learning.</strong></li>
+<li> Passionate about AI, ML, Deep Learning, and Generative AI.</li>
+<li> Currently learning Advanced Python, Deep Learning & Full Stack Development.</li>
+<li> All projects available at <a href="https://github.com/akashsuu">GitHub.</a></li>
+<li> I enjoy building AI chatbots, ML models, automation tools, and real-world solutions.</li>
 </ul>
 </details>
 
