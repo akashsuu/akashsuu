@@ -89,8 +89,8 @@
 <details open>
 <summary>🎯 Career Goals</summary>
 <ul>
-<li><strong>Short-Term:</strong> Improve programming skills, build a strong GitHub portfolio, complete AIML projects</li>
-<li><strong>Long-Term:</strong> Become an AI Engineer, work on cutting-edge AI systems, create impactful technology products, contribute to the AI community</li>
+<li><strong>Short-Term:</strong> Improve programming skills, build a strong GitHub portfolio, complete AIML projects.</li>
+<li><strong>Long-Term:</strong> Become an AI Engineer, work on cutting-edge AI systems, create impactful technology products, contribute to the AI community.</li>
 </ul>
 </details>
 
