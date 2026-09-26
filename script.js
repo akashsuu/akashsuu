@@ -1,66 +1,27 @@
-// KioOS kio speak meow :)
-
-const password = "1234";
-
 let activeWindow = null;
 let highestZ = 10;
-// STARTUP
+
 window.addEventListener("load", function () {
     const bootScreen = document.getElementById("boot-screen");
     const loginScreen = document.getElementById("login-screen");
     const desktop = document.getElementById("desktop");
 
-    console.log("KioOS: system loaded");
-
-    // Hide desktop while booting
     desktop.style.display = "none";
     loginScreen.style.display = "none";
     bootScreen.style.display = "flex";
 
-    // Finish boot after 2 seconds
     setTimeout(function () {
-        console.log("KioOS: boot complete");
-
         bootScreen.style.display = "none";
         loginScreen.style.display = "flex";
-
-        const password = document.getElementById("password");
-
-        if (password) {
-            password.focus();
-        }
     }, 2000);
 });
 
-// LOGIN
-
 document.getElementById("login-button").addEventListener("click", login);
 
-document.getElementById("password").addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-        login();
-    }
-});
-
 function login() {
-    const input = document.getElementById("password");
-    const error = document.getElementById("login-error");
-
-    if (input.value === password) {
-        error.textContent = "";
-
-        document.getElementById("login-screen").style.display = "none";
-        document.getElementById("desktop").style.display = "block";
-
-        input.value = "";
-    } else {
-        error.textContent = "WRONG PASSWORD";
-
-        input.value = "";
-        input.focus();
-    }
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("desktop").style.display = "block";
 }
-// OPEN APPLICATIONS
 
 const appWindows = {
     files: "files-window",
@@ -95,7 +56,6 @@ function openApp(appName) {
 
     addTaskbarApp(appName);
 }
-// START MENU
 
 const startButton = document.getElementById("start-button");
 const startMenu = document.getElementById("start-menu");
@@ -116,17 +76,13 @@ document.querySelectorAll("#start-menu [data-app]").forEach(function (button) {
     });
 });
 
-// ------------------------// WINDOW BUTTONS
-
 document.querySelectorAll(".window").forEach(function (windowElement) {
     const buttons = windowElement.querySelectorAll(".window-buttons button");
 
-    // minimize
     buttons[0].addEventListener("click", function () {
         windowElement.style.display = "none";
     });
 
-    // maximize
     buttons[1].addEventListener("click", function () {
         if (windowElement.classList.contains("maximized")) {
             windowElement.classList.remove("maximized");
@@ -135,14 +91,12 @@ document.querySelectorAll(".window").forEach(function (windowElement) {
         }
     });
 
-    // close
     buttons[2].addEventListener("click", function () {
         windowElement.style.display = "none";
 
         removeTaskbarApp(windowElement.id);
     });
 
-    // click window to bring it forward
     windowElement.addEventListener("mousedown", function () {
         highestZ++;
 
@@ -152,7 +106,6 @@ document.querySelectorAll(".window").forEach(function (windowElement) {
     });
 });
 
-// TASKBAR
 function addTaskbarApp(appName) {
     const windowId = appWindows[appName];
 
@@ -192,8 +145,6 @@ function removeTaskbarApp(windowId) {
     }
 }
 
-// MAKE WINDOWS DRAGGABLE
-
 document.querySelectorAll(".window").forEach(function (windowElement) {
     const titleBar = windowElement.querySelector(".window-title");
 
@@ -203,7 +154,6 @@ document.querySelectorAll(".window").forEach(function (windowElement) {
     let mouseY = 0;
 
     titleBar.addEventListener("mousedown", function (event) {
-        // Don't drag when clicking buttons
         if (event.target.tagName === "BUTTON") {
             return;
         }
@@ -231,8 +181,6 @@ document.querySelectorAll(".window").forEach(function (windowElement) {
         let newX = event.clientX - mouseX;
 
         let newY = event.clientY - mouseY;
-
-        // Keep window inside the screen
 
         if (newX < 0) {
             newX = 0;
@@ -263,8 +211,6 @@ document.querySelectorAll(".window").forEach(function (windowElement) {
     });
 });
 
-// CLOCK
-
 function updateClock() {
     const clock = document.getElementById("clock");
 
@@ -287,7 +233,6 @@ function updateClock() {
 updateClock();
 
 setInterval(updateClock, 1000);
-// TERMINAL
 
 const terminalInput = document.getElementById("terminal-input");
 
@@ -299,7 +244,6 @@ const commandHistory = [];
 let historyIndex = -1;
 
 terminalInput.addEventListener("keydown", function (event) {
-    // Recall previous commands with the arrow keys
     if (event.key === "ArrowUp") {
         event.preventDefault();
 
@@ -357,12 +301,13 @@ terminalInput.addEventListener("keydown", function (event) {
     terminalInput.value = "";
 });
 
-// Keep focus on the input, and scroll to the newest line
-document.getElementById("terminal-window").addEventListener("mousedown", function () {
-    setTimeout(function () {
-        terminalInput.focus();
-    }, 0);
-});
+document
+    .getElementById("terminal-window")
+    .addEventListener("mousedown", function () {
+        setTimeout(function () {
+            terminalInput.focus();
+        }, 0);
+    });
 
 function printTerminal(text) {
     const line = document.createElement("div");
@@ -439,7 +384,10 @@ function runCommand(fullCommand) {
             const node = getNode(currentPath);
             const clean = target.toUpperCase();
 
-            if (node.children[clean] && node.children[clean].type === "folder") {
+            if (
+                node.children[clean] &&
+                node.children[clean].type === "folder"
+            ) {
                 currentPath.push(clean);
             } else {
                 printTerminal("NO SUCH DIRECTORY: " + target);
@@ -474,7 +422,9 @@ function runCommand(fullCommand) {
             printTerminal("ERROR: invalid characters");
         } else {
             try {
-                printTerminal(String(Function("return (" + expression + ")")()));
+                printTerminal(
+                    String(Function("return (" + expression + ")")()),
+                );
             } catch {
                 printTerminal("ERROR: could not evaluate");
             }
@@ -496,7 +446,9 @@ function runCommand(fullCommand) {
         printTerminal("  user:      AKASH");
         printTerminal("  os:        KioOS v0.1");
         printTerminal("  shell:     kiosh");
-        printTerminal("  uptime:    " + Math.floor(performance.now() / 1000) + "s");
+        printTerminal(
+            "  uptime:    " + Math.floor(performance.now() / 1000) + "s",
+        );
         printTerminal("  ----------------------------");
     } else if (command === "history") {
         if (commandHistory.length === 0) {
@@ -518,19 +470,11 @@ function runCommand(fullCommand) {
         setTimeout(function () {
             document.getElementById("desktop").style.display = "none";
             document.getElementById("login-screen").style.display = "flex";
-
-            const passwordField = document.getElementById("password");
-
-            if (passwordField) {
-                passwordField.focus();
-            }
         }, 400);
     } else {
         printTerminal("COMMAND NOT FOUND: " + command);
     }
 }
-
-// VIRTUAL FILE SYSTEM
 
 const defaultFS = {
     type: "folder",
@@ -573,7 +517,6 @@ function saveFS() {
 
 let fileSystem = loadFS();
 
-// Get the folder node at a path, e.g. ["DOCUMENTS"]
 function getNode(path) {
     let node = fileSystem;
 
@@ -591,8 +534,6 @@ function getNode(path) {
 function pathLabel(path) {
     return path.length === 0 ? "HOME" : "HOME/" + path.join("/");
 }
-
-// FILE MANAGER
 
 let currentPath = [];
 let selectedName = null;
@@ -748,8 +689,6 @@ document.getElementById("fm-delete").addEventListener("click", function () {
 
 renderFileArea();
 
-// NOTES / TEXT EDITOR
-
 const notesArea = document.getElementById("notes-area");
 
 const editorFilenameInput = document.getElementById("editor-filename");
@@ -814,7 +753,6 @@ function saveCurrentFile() {
             new Date().toLocaleTimeString(),
     );
 
-    // Refresh the file manager if it is showing this folder
     if (currentPath.join("/") === editorFolderPath.join("/")) {
         renderFileArea();
     }
@@ -828,38 +766,43 @@ document.getElementById("editor-new").addEventListener("click", function () {
     setEditorStatus("New file");
 });
 
-document.getElementById("editor-save").addEventListener("click", saveCurrentFile);
+document
+    .getElementById("editor-save")
+    .addEventListener("click", saveCurrentFile);
 
-document.getElementById("editor-download").addEventListener("click", async function () {
-    let name = editorFilenameInput.value.trim().toUpperCase();
+document
+    .getElementById("editor-download")
+    .addEventListener("click", async function () {
+        let name = editorFilenameInput.value.trim().toUpperCase();
 
-    if (!name.includes(".")) {
-        name += ".TXT";
-    }
+        if (!name.includes(".")) {
+            name += ".TXT";
+        }
 
-    const downloads = await claude.use("downloads");
+        const downloads = await claude.use("downloads");
 
-    if (!downloads) {
-        setEditorStatus("Downloads aren't available in this view.");
-        return;
-    }
+        if (!downloads) {
+            setEditorStatus("Downloads aren't available in this view.");
+            return;
+        }
 
-    try {
-        await downloads.save({
-            filename: name,
-            data: notesArea.value,
-        });
+        try {
+            await downloads.save({
+                filename: name,
+                data: notesArea.value,
+            });
 
-        setEditorStatus("Downloaded " + name);
-    } catch (error) {
-        setEditorStatus("Download cancelled");
-    }
-});
-
+            setEditorStatus("Downloaded " + name);
+        } catch (error) {
+            setEditorStatus("Download cancelled");
+        }
+    });
 
 const calculatorDisplay = document.getElementById("calculator-display");
 
-const calculatorButtons = document.querySelectorAll(".calculator-buttons button");
+const calculatorButtons = document.querySelectorAll(
+    ".calculator-buttons button",
+);
 
 calculatorButtons.forEach(function (button) {
     button.addEventListener("click", function () {
@@ -882,7 +825,6 @@ function calculateResult() {
         return;
     }
 
-    // Only allow calculator characters
     if (!/^[0-9+\-*/. ]+$/.test(expression)) {
         calculatorDisplay.value = "ERROR";
 
@@ -895,7 +837,6 @@ function calculateResult() {
         calculatorDisplay.value = "ERROR";
     }
 }
-
 
 const address = document.getElementById("address");
 
@@ -925,9 +866,6 @@ function openWebsite() {
     }
 
     browserPage.innerHTML = "Opening " + url + "...";
-
-    // Open website in a new browser tab.
-    // Many websites don't allow iframe embedding.
 
     window.open(url, "_blank");
 }
