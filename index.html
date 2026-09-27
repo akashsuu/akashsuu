@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KioOS</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!--boot-->
+<div id="boot-screen">
+<div class="boot-logo">KioOS</div>
+<div class="boot-text">Starting system...</div>
+<div class="loading-bar"><span></span></div>
+</div>
+
+<!--desktop-->
+<main id="desktop">
+<div class="desktop-icons">
+
+<div class="desktop-icon" data-app="files">
+<div class="icon"><img src="icon/icons8-file-128.png"></div>
+<span>FILES</span>
+</div>
+
+<div class="desktop-icon" data-app="calculator">
+<div class="icon"><img src="icon/icons8-calculator-48.png"></div>
+<span>CALC</span>
+</div>
+
+<div class="desktop-icon" data-app="terminal">
+<div class="icon"><img src="icon/icons8-terminal-50.png"></div>
+<span>TERMINAL</span>
+</div>
+
+<div class="desktop-icon" data-app="settings">
+<div class="icon"><img src="icon/icons8-setting-50.png"></div>
+<span>SETTINGS</span>
+</div>
+
+<div class="desktop-icon" data-app="browser">
+<div class="icon"><img src="icon/icons8-browser-50.png"></div>
+<span>BROWSER</span>
+</div>
+
+<div class="desktop-icon" data-app="notes">
+<div class="icon"><img src="icon/icons8-note-50.png"></div>
+<span>NOTES</span>
+</div>
+
+</div>
+
+<!--files-->
+<section class="window" id="files-window">
+<div class="window-title">
+<span>FILES</span>
+<div class="window-buttons">
+<button>_</button><button>□</button><button>X</button>
+</div>
+</div>
+<div class="window-body file-manager">
+<aside class="file-sidebar">
+<div data-path="">MY COMPUTER</div>
+<div data-path="">HOME</div>
+<div data-path="DOCUMENTS">DOCUMENTS</div>
+<div data-path="PICTURES">PICTURES</div>
+<div data-path="DOWNLOADS">DOWNLOADS</div>
+</aside>
+<div class="file-main">
+<div class="file-toolbar">
+<span id="file-path-label">HOME</span>
+<div class="file-toolbar-buttons">
+<button id="fm-up">UP</button>
+<button id="fm-new-folder">NEW FOLDER</button>
+<button id="fm-new-file">NEW FILE</button>
+<button id="fm-delete">DELETE</button>
+</div>
+</div>
+<div class="file-area" id="file-area"></div>
+</div>
+</div>
+</section>
+
+<!--notes-->
+<section class="window" id="notes-window">
+<div class="window-title">
+<span>NOTEPAD</span>
+<div class="window-buttons">
+<button>_</button><button>□</button><button>X</button>
+</div>
+</div>
+<div class="editor-toolbar">
+<input type="text" id="editor-filename" value="UNTITLED.TXT">
+<div class="editor-toolbar-buttons">
+<button id="editor-new">NEW</button>
+<button id="editor-save">SAVE</button>
+<button id="editor-download">DOWNLOAD</button>
+</div>
+</div>
+<textarea id="notes-area" placeholder="TYPE SOMETHING..."></textarea>
+<div id="editor-status"></div>
+</section>
+
+<!--terminal-->
+<section class="window" id="terminal-window">
+<div class="window-title">
+<span>KioOS TERMINAL</span>
+<div class="window-buttons">
+<button>_</button><button>□</button><button>X</button>
+</div>
+</div>
+<div class="terminal-body">
+<div>KioOS Terminal v0.1</div>
+<div>Type "help" for a list of commands.</div>
+<br>
+<div id="terminal-output"></div>
+<div class="terminal-line">
+<span>AKASH@KIOOS&gt;</span>
+<input type="text" id="terminal-input" autocomplete="off">
+</div>
+</div>
+</section>
+
+<!--browser-->
+<section class="window" id="browser-window">
+<div class="window-title">
+<span>KioBrowser</span>
+<div class="window-buttons">
+<button>_</button><button>□</button><button>X</button>
+</div>
+</div>
+<div class="browser-body">
+<div class="address-bar">
+<button>&lt;</button>
+<button>&gt;</button>
+<input type="text" id="address" value="https://example.com">
+<button>GO</button>
+</div>
+<div class="browser-page">KioBrowser</div>
+</div>
+</section>
+
+<!--calculator-->
+<section class="window small-window" id="calculator-window">
+<div class="window-title">
+<span>CALCULATOR</span>
+<div class="window-buttons">
+<button>_</button><button>□</button><button>X</button>
+</div>
+</div>
+<div class="calculator">
+<input type="text" id="calculator-display" readonly>
+<div class="calculator-buttons">
+<button>C</button>
+<button>/</button>
+<button>*</button>
+<button>-</button>
+<button>7</button>
+<button>8</button>
+<button>9</button>
+<button>+</button>
+<button>4</button>
+<button>5</button>
+<button>6</button>
+<button>=</button>
+<button>1</button>
+<button>2</button>
+<button>3</button>
+<button>.</button>
+<button class="zero">0</button>
+</div>
+</div>
+</section>
+
+<!--settings-->
+<section class="window" id="settings-window">
+<div class="window-title">
+<span>SYSTEM SETTINGS</span>
+<div class="window-buttons">
+<button>_</button><button>□</button><button>X</button>
+</div>
+</div>
+<div class="settings-body">
+<h2>KioOS SETTINGS</h2>
+<div class="setting-row"><span>USERNAME</span><span>AKASH</span></div>
+<div class="setting-row"><span>SYSTEM</span><span>KioOS</span></div>
+<div class="setting-row"><span>VERSION</span><span>0.1</span></div>
+</div>
+</section>
+
+<!--menu-->
+<div id="start-menu">
+<div class="start-title">KioOS</div>
+<div class="start-user">USER: AKASH</div>
+<div class="start-apps">
+<button data-app="files">[F] FILES</button>
+<button data-app="terminal">[_] TERMINAL</button>
+<button data-app="browser">[@] BROWSER</button>
+<button data-app="notes">[N] NOTEPAD</button>
+<button data-app="calculator">[#] CALCULATOR</button>
+<button data-app="settings">[*] SETTINGS</button>
+</div>
+<div class="start-footer">KioOS v0.1</div>
+</div>
+
+<!--taskbar-->
+<footer id="taskbar">
+<button id="start-button">K</button>
+<div id="taskbar-apps"></div>
+<div class="system-info">
+<span id="network-status">NET: OK</span>
+<span id="clock">00:00</span>
+</div>
+</footer>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
